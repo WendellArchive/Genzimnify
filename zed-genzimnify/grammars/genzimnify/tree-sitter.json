@@ -1,0 +1,23 @@
+{
+  "grammars": [
+    {
+      "name": "genzimnify",
+      "scope": "source.gzim",
+      "file-types": ["gzim"],
+      "highlights": "queries/highlights.scm",
+      "external-scanner": {
+        "root": "src",
+        "c": "scanner.c",
+        "cpp": "scanner.cpp"
+      }
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "license": "MIT",
+    "description": "Gen Z slang transpiles to Python. If it vibes, it compiles.",
+    "links": {
+      "repository": "https://github.com/genzimnify/genzimnify"
+    }
+  }
+}

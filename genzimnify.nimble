@@ -5,5 +5,5 @@ author        = "Genzimnify"
 description   = "Genzimnify: Python semantics, Gen Z surface syntax — transpiles .gzim to Python. If it vibes, it compiles."
 license       = "MIT"
 srcDir        = "src"
-bin           = @["genzimc"]
+bin           = @["genzimc", "gzim-lsp"]
 requires      = "nim >= 2.0.0"

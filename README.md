@@ -117,6 +117,56 @@ Semantic rules enforced at compile time: reassignment requires a prior `let`,
 inside loops, `fam` only inside clique methods, `wait up` only inside
 `on timing cook`, `drop` marks generators.
 
+## Tooling: LSP + Zed extension
+
+### gzim-lsp (language server)
+
+Build with `nim c -o:build/gzim-lsp src/gzimlsp.nim` (or `nimble build`). Speaks
+JSON-RPC/LSP over stdio and provides:
+
+- **Diagnostics** — parse + semantic cap, published live as you type
+- **Hover** — slang keyword docs (with the Python equivalent), variable/cook/clique
+  signatures, `fam`/`ancestor` explainers
+- **Go-to-definition** — jump to `let` / `cook` / `clique` / param declarations
+- **Completion** — all slang keywords, builtins, modules + file-local decls
+- **Document symbols** — outline of cooks, cliques and variables
+
+```sh
+tests/lsp_test.sh   # scripted end-to-end protocol test
+```
+
+### Zed extension (`zed-genzimnify/`)
+
+```
+zed-genzimnify/
+├── extension.toml                    # extension + grammar + language + server manifest
+├── Cargo.toml / src/lib.rs           # wasm glue: locates gzim-lsp for Zed
+├── languages/genzimnify/
+│   ├── config.toml                   # .gzim files -> Genzimnify language
+│   └── highlights.scm                # tree-sitter highlight queries
+└── grammars/genzimnify/
+    ├── grammar.js                    # the tree-sitter grammar
+    ├── tree-sitter.json
+    └── src/{parser.c,scanner.c,...}   # generated parser + external scanner
+                                      # (NEWLINE/INDENT/DEDENT + glow f-strings)
+```
+
+Install as a dev extension: Zed → command palette → `zed: install dev extension`
+→ select the `zed-genzimnify` folder. Zed compiles the tree-sitter grammar to
+wasm and registers the language for `.gzim` files; the extension's Rust glue
+spawns `gzim-lsp` from your PATH for diagnostics/hover/completion/navigation.
+
+Build `gzim-lsp` first and keep it on PATH (e.g. `~/.local/bin`), otherwise
+Zed will error when it tries to start the server.
+
+To regenerate the parser after editing `grammar.js`:
+
+```sh
+cd grammars/genzimnify && tree-sitter generate
+cp src/parser.c src/scanner.c src/node-types.json src/grammar.json \
+   ../../zed-genzimnify/grammars/genzimnify/src/
+```
+
 ## Tests
 
 ```sh

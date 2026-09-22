@@ -1,0 +1,16 @@
+id = "genzimnify"
+name = "Genzimnify"
+description = "Gen Z slang transpiles to Python. If it vibes, it compiles. Syntax highlighting (tree-sitter) + gzim-lsp integration: diagnostics, hover, go-to-definition, completion, symbols."
+version = "0.1.0"
+schema_version = 1
+authors = ["Genzimnify"]
+repository = "https://github.com/genzimnify/genzimnify"
+
+[grammars.genzimnify]
+path = "grammars/genzimnify"
+
+[languages.genzimnify]
+path = "languages/genzimnify"
+
+[language_servers.gzim-lsp]
+languages = ["Genzimnify"]

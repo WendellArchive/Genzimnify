@@ -1,0 +1,17 @@
+# Build artifacts
+build/
+target/
+dist/
+
+# Generated transpiler output
+*.gzmap
+
+# System / editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Environment
+.env

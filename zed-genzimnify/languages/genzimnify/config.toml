@@ -1,0 +1,8 @@
+name = "Genzimnify"
+grammar = "genzimnify"
+scope = "source.gzim"
+path_suffixes = ["gzim"]
+file_types = ["gzim"]
+line_comments = ["# "]
+block_comment = ["#[[ ", " ]]#"]
+language_servers = ["gzim-lsp"]
