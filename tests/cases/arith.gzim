@@ -1,0 +1,13 @@
+let x be 5
+let y be 10
+x be x + y fr
+yap(x)
+yap(2 ** 8)
+yap(10 // 3)
+yap(10 % 3)
+yap(7 / 2)
+yap(aint (1 > 2))
+yap(1 both 2)
+yap(ghost)
+yap(nocap, cap)
+yap(1 both ghost or 3)

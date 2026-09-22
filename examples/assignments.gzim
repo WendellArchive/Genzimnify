@@ -1,0 +1,26 @@
+lock PI be 3.14159
+yap(PI > 3)
+
+let x be 10
+x be+ 5
+yap(x)
+x be- 2
+yap(x)
+x be* 3
+yap(x)
+x be// 2
+yap(x)
+x be% 4
+yap(x)
+
+let i be 0
+vibe i < 5:
+    i be i + 1
+    vibecheck i == 3:
+        next
+    yap(i)
+
+for real j up in vibes(3):
+    vibecheck j == 1:
+        dip
+    yap(j)

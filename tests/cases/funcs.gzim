@@ -1,0 +1,21 @@
+cook add(a, b):
+    send it a + b fr
+
+yap(call up add(4, 3) yo)
+
+cook greet(name, greeting be "yo"):
+    yap(greeting + " " + name)
+
+call up greet("chat") yo
+call up greet("chat", "sup") yo
+
+let double be mini vibe(x): x * 2
+yap(call up double(21) yo)
+
+cook countdown(n):
+    vibe n > 0:
+        drop n
+        n be n - 1
+
+for real i up in call up countdown(3) yo:
+    yap(i)

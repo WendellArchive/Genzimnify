@@ -1,0 +1,6 @@
+let x be 5 as num
+let name as text be "chat"
+cook typed(a as num, b as num) gives num:
+    send it a + b
+yap(call up typed(1, 2) yo)
+let u be 1/0

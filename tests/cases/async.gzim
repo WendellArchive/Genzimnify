@@ -1,0 +1,7 @@
+pull up timing
+
+on timing cook main():
+    wait up timing.sleep(0)
+    yap("async vibes fr")
+
+call up timing.run(main()) yo

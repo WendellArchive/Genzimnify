@@ -1,0 +1,6 @@
+cook add(a as num, b as num) gives num:
+    send it a + b
+yap(call up add(1, 2) yo)
+let x be 5 as num
+let name as text be "chat"
+yap(x, name)

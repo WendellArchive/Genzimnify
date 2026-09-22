@@ -1,0 +1,15 @@
+pull up clock
+pull up math as m
+pull up luck
+pull up timing
+outta math pull up sqrt as root
+outta system pull up getenv as env
+yap(call up m.floor(2.7) yo)
+yap(call up root(9) yo)
+yap(call up env("HOME") yo nah "")
+
+on timing cook main():
+    wait up timing.sleep(0)
+    yap("async vibes fr")
+
+call up timing.run(main()) yo

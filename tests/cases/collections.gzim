@@ -1,0 +1,18 @@
+let evens be [x for real x up in vibes(10) sus x % 2 == 0]
+yap(evens)
+let sq be [n * n for real n up in vibes(5)]
+yap(sq)
+let m be {"a": 1, "b": 2}
+yap(m["a"])
+let s be {1, 2, 2}
+yap(call up how many(s) yo)
+let t be (1, 2)
+yap(t)
+let nums be stack("abc")
+yap(nums)
+yap(m["a"] same as 1, m["a"] nah 2)
+yap("a" up in m, "z" aint up in m)
+let names be ["zed", "amy", "bob"]
+yap(call up ranked(names) yo)
+yap(call up add up([1, 2, 3]) yo)
+yap(call up most([1, 9, 3]) yo, call up least([1, 9, 3]) yo)

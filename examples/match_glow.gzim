@@ -1,0 +1,14 @@
+for real x up in [1, 2, 99]:
+    fit check x:
+        fit 1:
+            yap("one")
+        fit 2:
+            yap("two")
+        otherwise:
+            yap("idk")
+
+let name be "chat"
+let n be 7
+yap(glow"hey {name}, {n + 1} vibes")
+yap(glow"literal {{braces}} fr")
+yap(glow"padded {n:03d}!")

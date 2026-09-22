@@ -1,0 +1,21 @@
+clique Dog:
+    cook new(fam, name):
+        fam.name be name
+
+    cook speak(fam):
+        yap(glow"{fam.name} says woof")
+
+clique Puppy(Dog):
+    cook new(fam, name):
+        ancestor.new(fam, name)
+        fam.cuteness be 100
+
+    cook speak(fam):
+        yap("tiny woof")
+
+let d be call up Dog("Rex") yo
+call up d.speak() yo
+let p be call up Puppy("Bit") yo
+call up p.speak() yo
+yap(p.name)
+yap(p.cuteness)

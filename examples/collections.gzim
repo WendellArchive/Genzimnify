@@ -1,0 +1,12 @@
+let evens be [x for real x up in vibes(10) sus x % 2 == 0]
+yap(evens)
+let sq be [n * n for real n up in vibes(5)]
+yap(sq)
+let m be {"a": 1, "b": 2}
+yap(m["a"])
+let s be {1, 2, 2}
+yap(call up how many(s) yo)
+let t be (1, 2)
+yap(t)
+let nums be stack("abc")
+yap(nums)

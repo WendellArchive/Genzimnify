@@ -1,0 +1,16 @@
+f_around:
+    let x be 1 / 0
+find_out SplitByZero as e:
+    yap("can't divide by zero, bestie")
+no_matter_what:
+    yap("we move")
+
+f_around:
+    throw shade BadVibe("nah")
+find_out BadVibe as e:
+    yap(glow"caught: {e}")
+
+f_around:
+    throw shade WrongType("wrong type lol")
+find_out:
+    yap("caught everything")

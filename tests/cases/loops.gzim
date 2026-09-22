@@ -1,0 +1,11 @@
+let i be 0
+vibe i < 5:
+    i be i + 1
+    vibecheck i == 3:
+        next
+    yap(i)
+
+for real j up in vibes(3):
+    vibecheck j == 1:
+        dip
+    yap(j)

@@ -1,0 +1,9 @@
+for real i up in vibes(1, 16):
+    vibecheck i % 15 == 0:
+        yap("FizzBuzz")
+    or i % 3 == 0:
+        yap("Fizz")
+    or i % 5 == 0:
+        yap("Buzz")
+    otherwise:
+        yap(i)
