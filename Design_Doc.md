@@ -34,7 +34,7 @@ A Genzimnify program is called a **vibe**. Running it is **vibing**. Errors are 
 
 | Genzimnify | Python | Purpose |
 |---|---|---|
-| `let` | — | Variable declaration |
+| `let` |, | Variable declaration |
 | `be` | `=` | Assignment / binding |
 | `lock` | `const` | Immutable declaration |
 | `nocap` | `True` | Boolean true |
@@ -60,8 +60,8 @@ A Genzimnify program is called a **vibe**. Running it is **vibing**. Errors are 
 | `cook` | `def` | Function definition |
 | `send it` | `return` | Return value |
 | `drop` | `yield` | Yield value |
-| `call up` | — | Function call prefix |
-| `yo` | — | Function call suffix |
+| `call up` |, | Function call prefix |
+| `yo` |, | Function call suffix |
 | `clique` | `class` | Class definition |
 | `new` | `__init__` | Constructor |
 | `fam` | `self` | Self reference |
@@ -85,7 +85,7 @@ A Genzimnify program is called a **vibe**. Running it is **vibing**. Errors are 
 | `fit` | `case` | Match case |
 | `yap` | `print` | Print statement |
 | `yap back` | `input` | Input statement |
-| `fr` | — | Optional statement terminator |
+| `fr` |, | Optional statement terminator |
 
 ### 2.5 Operators
 
@@ -699,12 +699,12 @@ comprehension  := "[" expr "for real" IDENT "up in" expr ("sus" expr)? "]"
 
 ### 16.1 Pipeline
 
-1. **Lexer** — Converts `.gzim` source into a stream of tokens.
-2. **Parser** — Recursive descent + Pratt parser for expressions. Produces an AST.
-3. **AST** — Nodes for Program, Block, VarDecl, Assign, If, While, For, FuncDef, ClassDef, Import, Try, Return, Break, Continue, Pass, ExprStmt, Call, Binary, Unary, Literal, Identifier, Attribute, Subscript, Lambda, Await, Yield, With, Match.
-4. **Semantic Analysis** — Scope checking, type hint validation, `fam` only in methods, `send it` only in functions, `dip`/`next` only in loops, `wait up` only in async.
-5. **Python Emitter** — Maps Genzimnify constructs to Python. Tracks indentation, handles `:` and dedent, emits `.py`.
-6. **Source Maps** — Maps generated Python lines back to `.gzim` lines for error reporting.
+1. **Lexer**, Converts `.gzim` source into a stream of tokens.
+2. **Parser**, Recursive descent + Pratt parser for expressions. Produces an AST.
+3. **AST**, Nodes for Program, Block, VarDecl, Assign, If, While, For, FuncDef, ClassDef, Import, Try, Return, Break, Continue, Pass, ExprStmt, Call, Binary, Unary, Literal, Identifier, Attribute, Subscript, Lambda, Await, Yield, With, Match.
+4. **Semantic Analysis**, Scope checking, type hint validation, `fam` only in methods, `send it` only in functions, `dip`/`next` only in loops, `wait up` only in async.
+5. **Python Emitter**, Maps Genzimnify constructs to Python. Tracks indentation, handles `:` and dedent, emits `.py`.
+6. **Source Maps**, Maps generated Python lines back to `.gzim` lines for error reporting.
 
 ### 16.2 Suggested Nim Modules
 
@@ -846,4 +846,4 @@ Since it transpiles directly to Python and preserves these constructs, it inheri
 
 ---
 
-**Genzimnify** — because why write Python when you can vibe?
+**Genzimnify**, because why write Python when you can vibe?

@@ -90,7 +90,7 @@ let n be call up how many(stack) yo
 - exceptions: `f_around` / `find_out BadVibe as e` / `no_matter_what`
 - pattern matching: `fit check x:` / `fit 1:` / `otherwise:`
 - context managers: `roll with unlock("file.txt") as f:`
-- async: `on timing cook fetch():` — run with `call up timing.run(fetch()) yo`
+- async: `on timing cook fetch():`, run with `call up timing.run(fetch()) yo`
 
 ### Slang modules & exceptions
 
@@ -105,12 +105,12 @@ let n be call up how many(stack) yo
 
 ## Architecture (in Nim, under `src/genzimnify/`)
 
-1. `lexer.nim` — tokens, INDENT/DEDENT stack, `fr`, multi-word keywords
-2. `parser.nim` — recursive descent statements + Pratt expressions
-3. `ast.nim` — variant AST nodes
-4. `semantic.nim` — the vibecheck: scoping, locks, mis-scoped slang
-5. `emit.nim` — Python emitter with indentation tracking + source map
-6. `cli.nim` — run / build / check / repl / init
+1. `lexer.nim`, tokens, INDENT/DEDENT stack, `fr`, multi-word keywords
+2. `parser.nim`, recursive descent statements + Pratt expressions
+3. `ast.nim`, variant AST nodes
+4. `semantic.nim`, the vibecheck: scoping, locks, mis-scoped slang
+5. `emit.nim`, Python emitter with indentation tracking + source map
+6. `cli.nim`, run / build / check / repl / init
 
 Semantic rules enforced at compile time: reassignment requires a prior `let`,
 `lock` vars can't be rebound, `send it` only inside `cook`, `dip`/`next` only
@@ -119,7 +119,7 @@ inside loops, `fam` only inside clique methods, `wait up` only inside
 
 ## Browser playground (`site/`)
 
-Fully static — no build step, works from `file://` too:
+Fully static, no build step, works from `file://` too:
 
 ```sh
 # rebuild the in-browser transpiler (Nim -> JS) after touching the core:
@@ -142,12 +142,12 @@ source.
 Build with `nim c -o:build/gzim-lsp src/gzimlsp.nim` (or `nimble build`). Speaks
 JSON-RPC/LSP over stdio and provides:
 
-- **Diagnostics** — parse + semantic cap, published live as you type
-- **Hover** — slang keyword docs (with the Python equivalent), variable/cook/clique
+- **Diagnostics**, parse + semantic cap, published live as you type
+- **Hover**, slang keyword docs (with the Python equivalent), variable/cook/clique
   signatures, `fam`/`ancestor` explainers
-- **Go-to-definition** — jump to `let` / `cook` / `clique` / param declarations
-- **Completion** — all slang keywords, builtins, modules + file-local decls
-- **Document symbols** — outline of cooks, cliques and variables
+- **Go-to-definition**, jump to `let` / `cook` / `clique` / param declarations
+- **Completion**, all slang keywords, builtins, modules + file-local decls
+- **Document symbols**, outline of cooks, cliques and variables
 
 ```sh
 tests/lsp_test.sh   # scripted end-to-end protocol test
@@ -193,11 +193,11 @@ tests/run_tests.sh
 
 ## Notes & limits
 
-- Same-quote nesting inside `glow` strings is unsupported (like Python <3.12) — use mixed quotes.
+- Same-quote nesting inside `glow` strings is unsupported (like Python <3.12), use mixed quotes.
 - `pull up system` imports `os` (as `system`); `sys`-only names should use `outta system pull up <name>` (falls back to `sys` automatically).
-- Comparison chains transpile left-associative, unlike Python's chaining — write `both` chains explicitly.
+- Comparison chains transpile left-associative, unlike Python's chaining, write `both` chains explicitly.
 - Requires Python 3.10+ at runtime (`asyncio.run`, `int | str` unions, `match`).
 
 ---
 
-**Genzimnify** — because why write Python when you can vibe?
+**Genzimnify**, because why write Python when you can vibe?

@@ -95,7 +95,7 @@ static bool scan_fstring_start(Scanner *s, TSLexer *lexer) {
       s->triple = 1;
       s->pending_end = false;
     } else {
-      // empty string: glow"" — closing quote already consumed
+      // empty string: glow"", closing quote already consumed
       s->triple = 0;
       s->pending_end = true;
     }

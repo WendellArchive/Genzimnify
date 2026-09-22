@@ -24,7 +24,7 @@ done
 
 echo "$pass passed, $fail failed"
 if [ "$fail" -ne 0 ]; then
-  echo "that's cap — fix it"
+  echo "that's cap, fix it"
   exit 1
 fi
 echo "all vibes check out fr"

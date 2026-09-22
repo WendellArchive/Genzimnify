@@ -1,4 +1,4 @@
-## Parser for Genzimnify — recursive descent for statements,
+## Parser for Genzimnify, recursive descent for statements,
 ## Pratt parsing for expressions. Slang in, AST out.
 
 import std/[strutils, tables]
@@ -58,7 +58,7 @@ proc finishStmt(p: var Parser) =
     return
   if p.check(tNewline) or p.check(tDedent) or p.check(tEOF):
     return
-  raise p.fail("statement didn't end right — finish it with a newline or 'fr'")
+  raise p.fail("statement didn't end right, finish it with a newline or 'fr'")
 
 # ------------------------------------------------------------------ types
 
@@ -193,12 +193,12 @@ proc parseFStrParts(raw: string, line: int): seq[FStrPart] =
           else: discard
         inc j
       if depth != 0:
-        failFStr("glow interpolation never closed — missing '}'")
+        failFStr("glow interpolation never closed, missing '}'")
       let inner = raw[(i + 1) ..< (j - 1)]
       flush()
       let (esrc, spec) = splitSpec(inner)
       if esrc.strip().len == 0:
-        failFStr("empty glow interpolation — put an expression in there")
+        failFStr("empty glow interpolation, put an expression in there")
       result.add FStrPart(
         isExpr: true,
         text: inner,
@@ -212,7 +212,7 @@ proc parseFStrParts(raw: string, line: int): seq[FStrPart] =
         inc i
         inc i
       else:
-        failFStr("stray '}' in glow string — double it (}}) if you meant it")
+        failFStr("stray '}' in glow string, double it (}}) if you meant it")
     else:
       lit.add c
       inc i
@@ -233,7 +233,7 @@ proc parseStmts(p: var Parser): seq[Stmt] =
     if p.check(tDedent) or p.check(tEOF):
       break
     if p.check(tIndent):
-      raise p.fail("sudden indent — a line can't start more-indented than the one before")
+      raise p.fail("sudden indent, a line can't start more-indented than the one before")
     result.add p.parseStmt()
 
 proc parseBlock(p: var Parser): seq[Stmt] =
@@ -242,7 +242,7 @@ proc parseBlock(p: var Parser): seq[Stmt] =
       raise p.fail("expected an indented block after ':'")
     result = p.parseStmts()
     if not p.match(tDedent):
-      raise p.fail("unindent doesn't match any outer level — check your spacing")
+      raise p.fail("unindent doesn't match any outer level, check your spacing")
   else:
     # inline block: statements on the same line, separated by `fr`
     while true:
@@ -459,7 +459,7 @@ proc parseMatch(p: var Parser): Stmt =
   let subject = p.parseExpr()
   p.expectColon("the fit check subject")
   if not p.match(tNewline):
-    raise p.fail("expected a newline after 'fit check x:' — each fit goes on its own line")
+    raise p.fail("expected a newline after 'fit check x:', each fit goes on its own line")
   if not p.match(tIndent):
     raise p.fail("expected an indented block of 'fit' cases")
   var cases: seq[tuple[pattern: Expr, body: seq[Stmt]]] = @[]
@@ -476,7 +476,7 @@ proc parseMatch(p: var Parser): Stmt =
       defBody = p.parseBlock()
       hasDefault = true
   if not p.match(tDedent):
-    raise p.fail("expected the fit cases to end — dedent to close the fit check")
+    raise p.fail("expected the fit cases to end, dedent to close the fit check")
   Stmt(kind: skMatch, msubject: subject, mcases: cases, mdefault: defBody,
        hasDefault: hasDefault, line: t.line, col: t.col)
 
@@ -710,7 +710,7 @@ proc parsePrefix(p: var Parser): Expr =
     discard p.advance()
     result = p.parseExpr()
     if not p.match(tYo):
-      raise p.fail("you called it up but never said 'yo' — close the vibe with yo")
+      raise p.fail("you called it up but never said 'yo', close the vibe with yo")
   of tWaitUp:
     discard p.advance()
     let operand = p.parseExpr(45)
@@ -743,7 +743,7 @@ proc parsePrefix(p: var Parser): Expr =
       discard p.expect(tRParen, "expected ')' to close the crew")
       result = Expr(kind: ekTuple, items: items, line: t.line, col: t.col)
     else:
-      discard p.expect(tRParen, "expected ')' — you opened a paren and dipped")
+      discard p.expect(tRParen, "expected ')', you opened a paren and dipped")
       first.grouped = true
       result = first
   of tLBracket:
@@ -803,9 +803,9 @@ proc parsePrefix(p: var Parser): Expr =
     of tFit: raise p.fail("fit only makes sense inside a fit check")
     of tFindOut: raise p.fail("find_out needs an f_around above it")
     of tNoMatterWhat: raise p.fail("no_matter_what needs an f_around above it")
-    of tYo: raise p.fail("'yo' with no 'call up' — that's cap")
+    of tYo: raise p.fail("'yo' with no 'call up', that's cap")
     of tDedent: raise p.fail("unexpected end of block")
-    else: raise p.fail("didn't expect " & tokDesc(t.kind, t.text) & " here — that ain't it")
+    else: raise p.fail("didn't expect " & tokDesc(t.kind, t.text) & " here, that ain't it")
 
 proc attrName(p: var Parser): string =
   let at = p.peek()

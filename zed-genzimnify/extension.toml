@@ -7,6 +7,8 @@ authors = ["Genzimnify"]
 repository = "https://github.com/genzimnify/genzimnify"
 
 [grammars.genzimnify]
+repository = "https://github.com/wendellmeset/Genzimnify.git"
+commit = "3efef3ee20a87dc9e3ddcdfdf53d136c9d54d82c"
 path = "grammars/genzimnify"
 
 [languages.genzimnify]

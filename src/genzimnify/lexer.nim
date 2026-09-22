@@ -1,4 +1,4 @@
-## Lexer for Genzimnify (.gzim) — slang in, tokens out.
+## Lexer for Genzimnify (.gzim), slang in, tokens out.
 ##
 ## Handles:
 ##  - indentation-based blocks (INDENT / DEDENT tokens)
@@ -84,7 +84,7 @@ proc skipBlockComment(l: var Lexer) =
     discard l.advance()
   while true:
     if l.pos >= l.src.len:
-      raise l.fail("yap session never ended — close the block comment with ]]#")
+      raise l.fail("yap session never ended, close the block comment with ]]#")
     if l.cur == ']' and l.peekChar == ']' and l.peekChar(2) == '#':
       for _ in 1 .. 3:
         discard l.advance()
@@ -102,7 +102,7 @@ proc lexString(l: var Lexer, kind: TokKind) =
     discard l.advance()
     while true:
       if l.pos >= l.src.len:
-        raise l.fail("string never ended — close the quote bestie")
+        raise l.fail("string never ended, close the quote bestie")
       if l.cur == '\\' and l.peekChar != '\0':
         raw.add l.advance()
         raw.add l.advance()
@@ -116,7 +116,7 @@ proc lexString(l: var Lexer, kind: TokKind) =
   else:
     while true:
       if l.pos >= l.src.len or l.cur == '\n':
-        raise l.fail("string never ended — close the quote bestie")
+        raise l.fail("string never ended, close the quote bestie")
       if l.cur == q:
         discard l.advance()
         break
@@ -358,7 +358,7 @@ proc lexOp(l: var Lexer) =
   of '!':
     discard l.advance()
     if l.cur == '=': discard l.advance(); l.addTok(tNotEq, "!=")
-    else: raise l.fail("lone '!' — that ain't it (did you mean '!=' ?)")
+    else: raise l.fail("lone '!', that ain't it (did you mean '!=' ?)")
   of '<':
     discard l.advance()
     if l.cur == '=': discard l.advance(); l.addTok(tLe, "<=")
@@ -388,7 +388,7 @@ proc lexOp(l: var Lexer) =
   of '?':
     discard l.advance(); l.addTok(tQuestion, "?")
   else:
-    raise l.fail("unexpected character '" & c & "' — that ain't it")
+    raise l.fail("unexpected character '" & c & "', that ain't it")
 
 # ------------------------------------------------------------------ main
 
@@ -426,7 +426,7 @@ proc handleLineStart(l: var Lexer) =
           l.indents.setLen(l.indents.len - 1)
           l.addTok(tDedent, "<dedent>")
         if l.indents.len == 0 or width != l.indents[^1]:
-          raise l.fail("inconsistent indentation — pick a lane (consistent spaces or tabs)")
+          raise l.fail("inconsistent indentation, pick a lane (consistent spaces or tabs)")
       l.atLineStart = false
       return
 

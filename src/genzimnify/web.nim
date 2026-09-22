@@ -1,4 +1,4 @@
-## Web glue for Genzimnify — compiled to JavaScript with `nim js`.
+## Web glue for Genzimnify, compiled to JavaScript with `nim js`.
 ## Exposes a single global `compileGzim(source) -> json-string` used by the
 ## static site: transpiles .gzim to Python and reports cap (diagnostics).
 
@@ -15,7 +15,7 @@ proc diagList(issues: seq[Issue]): seq[JsonNode] =
     }
 
 proc compileGzim*(source: cstring): cstring {.exportc.} =
-  ## Transpile Genzimnify source to Python; never throws — returns a JSON
+  ## Transpile Genzimnify source to Python; never throws, returns a JSON
   ## envelope: {ok, code?, error?, line?, col?, diags: [{line, col, message}]}
   var resp: JsonNode
   try:
@@ -25,7 +25,7 @@ proc compileGzim*(source: cstring): cstring {.exportc.} =
     if issues.len > 0:
       resp = %*{
         "ok": false,
-        "error": "cap detected — the vibes below ain't it",
+        "error": "cap detected, the vibes below ain't it",
         "line": issues[0].line,
         "col": issues[0].col,
         "diags": diagList(issues),

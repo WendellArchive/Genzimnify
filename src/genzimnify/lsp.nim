@@ -1,4 +1,4 @@
-## gzim-lsp — Language Server Protocol server for Genzimnify.
+## gzim-lsp, Language Server Protocol server for Genzimnify.
 ## Speaks JSON-RPC over stdio. Diagnostics, hover, go-to-definition,
 ## completion and document symbols. Errors are cap; we report them politely.
 
@@ -109,73 +109,73 @@ proc publishDiagnostics(uri: string, doc: Doc) =
 
 const KEYWORD_DOCS: Table[string, string] = {
   "let": "Variable declaration (`x` becomes bindable).",
-  "lock": "Immutable declaration — can't be rebound, fr.",
-  "be": "`=` — assignment / binding.",
-  "be+": "`+=` — compound add-assign.", "be-": "`-=`", "be*": "`*=`",
+  "lock": "Immutable declaration, can't be rebound, fr.",
+  "be": "`=`, assignment / binding.",
+  "be+": "`+=`, compound add-assign.", "be-": "`-=`", "be*": "`*=`",
   "be/": "`/=`", "be//": "`//=`", "be%": "`%=`", "be**": "`**=`",
   "nocap": "`True`.", "cap": "`False`.", "ghost": "`None`.",
   "both": "`and`.", "either": "`or`.", "aint": "`not`.",
-  "same as": "`==` — equality, no cap.",
-  "nah": "`!=` — inequality.",
-  "literally": "`is` — identity check.",
+  "same as": "`==`, equality, no cap.",
+  "nah": "`!=`, inequality.",
+  "literally": "`is`, identity check.",
   "aint literally": "`is not`.",
-  "up in": "`in` — membership.", "aint up in": "`not in`.",
-  "vibecheck": "`if` — run the check.",
+  "up in": "`in`, membership.", "aint up in": "`not in`.",
+  "vibecheck": "`if`, run the check.",
   "or": "`elif` (after vibecheck) or `or` (boolean).",
   "otherwise": "`else`.",
-  "vibe": "`while` — keep it going.",
-  "for real": "`for` — for real this time.", "up in": "`in`.",
-  "dip": "`break` — leave the loop.", "next": "`continue` — skip one.",
-  "deadass": "`pass` — do nothing, deadass.",
-  "cook": "`def` — cook something up.",
-  "send it": "`return` — send it back.",
-  "drop": "`yield` — drop a value (makes a generator).",
-  "call up": "Function call prefix — pairs with `yo`.",
-  "yo": "Function call suffix — pairs with `call up`.",
-  "clique": "`class` — roll with your clique.",
-  "new": "`__init__` — the constructor glow-up.",
-  "fam": "`self` — your fam.",
-  "ancestor": "`super` — respect the ancestors.",
-  "pull up": "`import` — pull up to the module.",
-  "outta": "`from` — outta a module.",
-  "as": "`as` — alias / type hint.",
-  "f_around": "`try` — f around and find out.",
-  "find_out": "`except` — find out what happens.",
-  "no_matter_what": "`finally` — no matter what.",
-  "throw shade": "`raise` — throw shade at the stack.",
-  "roll with": "`with` — roll with a context manager.",
-  "on timing": "`async` — on timing, not on target.",
-  "wait up": "`await` — wait up for the future.",
-  "mini vibe": "`lambda` — a tiny vibe.",
-  "worldwide": "`global` — worldwide scope.",
-  "localish": "`nonlocal` — kinda local.",
-  "cancel": "`del` — cancel the variable.",
-  "on god": "`assert` — on god this is true.",
-  "fit check": "`match` — fit check the value.",
-  "fit": "`case` — one fit per pattern.",
-  "yap": "`print` — yap about it.",
-  "yap back": "`input` — yap back at the user.",
+  "vibe": "`while`, keep it going.",
+  "for real": "`for`, for real this time.", "up in": "`in`.",
+  "dip": "`break`, leave the loop.", "next": "`continue`, skip one.",
+  "deadass": "`pass`, do nothing, deadass.",
+  "cook": "`def`, cook something up.",
+  "send it": "`return`, send it back.",
+  "drop": "`yield`, drop a value (makes a generator).",
+  "call up": "Function call prefix, pairs with `yo`.",
+  "yo": "Function call suffix, pairs with `call up`.",
+  "clique": "`class`, roll with your clique.",
+  "new": "`__init__`, the constructor glow-up.",
+  "fam": "`self`, your fam.",
+  "ancestor": "`super`, respect the ancestors.",
+  "pull up": "`import`, pull up to the module.",
+  "outta": "`from`, outta a module.",
+  "as": "`as`, alias / type hint.",
+  "f_around": "`try`, f around and find out.",
+  "find_out": "`except`, find out what happens.",
+  "no_matter_what": "`finally`, no matter what.",
+  "throw shade": "`raise`, throw shade at the stack.",
+  "roll with": "`with`, roll with a context manager.",
+  "on timing": "`async`, on timing, not on target.",
+  "wait up": "`await`, wait up for the future.",
+  "mini vibe": "`lambda`, a tiny vibe.",
+  "worldwide": "`global`, worldwide scope.",
+  "localish": "`nonlocal`, kinda local.",
+  "cancel": "`del`, cancel the variable.",
+  "on god": "`assert`, on god this is true.",
+  "fit check": "`match`, fit check the value.",
+  "fit": "`case`, one fit per pattern.",
+  "yap": "`print`, yap about it.",
+  "yap back": "`input`, yap back at the user.",
   "fr": "Statement terminator (optional, for emphasis).",
   "sus": "`if` filter in comprehensions.",
   "gives": "Return type hint.",
-  "glow": "f-string prefix — `glow\"{x}\"`.",
-  "stack": "list — a stack of things.",
-  "map": "dict — the map of the vibes.",
-  "squad": "set — the squad.",
-  "crew": "tuple — roll as a crew.",
+  "glow": "f-string prefix, `glow\"{x}\"`.",
+  "stack": "list, a stack of things.",
+  "map": "dict, the map of the vibes.",
+  "squad": "set, the squad.",
+  "crew": "tuple, roll as a crew.",
   "num": "int type / int() builtin.",
   "drip": "float type / float() builtin.",
   "text": "str type / str() builtin.",
   "truth": "bool type / bool() builtin.",
-  "vibes": "`range` — the vibes of iteration.",
-  "how many": "`len` — how many are in it.",
-  "add up": "`sum` — add it all up.",
+  "vibes": "`range`, the vibes of iteration.",
+  "how many": "`len`, how many are in it.",
+  "add up": "`sum`, add it all up.",
   "least": "`min`.", "most": "`max`.", "positive": "`abs`.",
-  "ranked": "`sorted` — put them on rank.",
-  "index up": "`enumerate`.", "link": "`zip` — link up two squads.",
-  "unlock": "`open` — unlock the file.",
+  "ranked": "`sorted`, put them on rank.",
+  "index up": "`enumerate`.", "link": "`zip`, link up two squads.",
+  "unlock": "`open`, unlock the file.",
   "round up": "`round`.",
-  "vibe check": "`type` — vibe check the type.",
+  "vibe check": "`type`, vibe check the type.",
   "luck": "`random` module.", "clock": "`time` module.",
   "system": "`os`/`sys` modules.", "timing": "`asyncio` module.",
   "stash": "`collections`.", "loops": "`itertools`.", "tools": "`functools`.",
@@ -346,18 +346,18 @@ proc hover(uri: string, pos: Pos): JsonNode =
         of dkFunction: "cook"
         of dkClass: "clique"
         of dkParam: "param"
-      md = &"**{d.get.name}** — *{kindLabel}*" & (if d.get.detail != "": " — " & d.get.detail else: "") &
+      md = &"**{d.get.name}**, *{kindLabel}*" & (if d.get.detail != "": ", " & d.get.detail else: "") &
            "\n\nno cap, declared at line " & $d.get.line
     elif KEYWORD_DOCS.hasKey(tok.text):
       md = KEYWORD_DOCS[tok.text]
     else:
       return newJNull()
   of tFam:
-    md = "**fam** — `self`, the method's bestie. Only vibes inside clique methods."
+    md = "**fam**, `self`, the method's bestie. Only vibes inside clique methods."
   of tAncestor:
-    md = "**ancestor** — `super()`. Respect the ancestors."
+    md = "**ancestor**, `super()`. Respect the ancestors."
   of tNew:
-    md = "**new** — `__init__`, the constructor."
+    md = "**new**, `__init__`, the constructor."
   else:
     if KEYWORD_DOCS.hasKey(tok.text):
       md = KEYWORD_DOCS[tok.text]
@@ -511,7 +511,7 @@ proc main*() =
       else:
         nullResponse(id)
     else:
-      # unknown notification/request — silence is a vibe
+      # unknown notification/request, silence is a vibe
       if not msg{"id"}.isNil:
         nullResponse(msg{"id"})
 

@@ -45,7 +45,7 @@ impl zed::Extension for GenzimnifyExtension {
                 env: Default::default(),
             }),
             None => Err(format!(
-                "{SERVER_NAME} not found on PATH — build it from the genzimnify \
+                "{SERVER_NAME} not found on PATH, build it from the genzimnify \
                  repo (nimble build) and make sure it's on your PATH"
             )),
         }

@@ -165,7 +165,7 @@ function showDiags(res) {
   if (list.length === 0) {
     const ok = document.createElement("div");
     ok.className = "ok";
-    ok.textContent = "no cap — the vibes check out";
+    ok.textContent = "no cap, the vibes check out";
     diagsBox.appendChild(ok);
     return;
   }
@@ -233,7 +233,7 @@ let pyodideLoading = null;
 async function ensurePyodide() {
   if (pyodide) return pyodide;
   if (!pyodideLoading) {
-    status.textContent = "pulling up the python runtime (pyodide) — first run takes a sec fr";
+    status.textContent = "pulling up the python runtime (pyodide), first run takes a sec fr";
     pyodideLoading = loadPyodide({
       indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/",
     }).then((py) => {

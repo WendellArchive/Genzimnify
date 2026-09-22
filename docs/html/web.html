@@ -77,7 +77,7 @@
     
     <div id="tocRoot"></div>
     
-    <p class="module-desc">Web glue for Genzimnify — compiled to JavaScript with <tt class="docutils literal"><span class="pre"><span class="Identifier">nim</span> <span class="Identifier">js</span></span></tt>. Exposes a single global <tt class="docutils literal"><span class="pre"><span class="Identifier">compileGzim</span><span class="Punctuation">(</span><span class="Identifier">source</span><span class="Punctuation">)</span> <span class="Operator">-&gt;</span> <span class="Identifier">json</span><span class="Operator">-</span><span class="Identifier">string</span></span></tt> used by the static site: transpiles .gzim to Python and reports cap (diagnostics).</p>
+    <p class="module-desc">Web glue for Genzimnify, compiled to JavaScript with <tt class="docutils literal"><span class="pre"><span class="Identifier">nim</span> <span class="Identifier">js</span></span></tt>. Exposes a single global <tt class="docutils literal"><span class="pre"><span class="Identifier">compileGzim</span><span class="Punctuation">(</span><span class="Identifier">source</span><span class="Punctuation">)</span> <span class="Operator">-&gt;</span> <span class="Identifier">json</span><span class="Operator">-</span><span class="Identifier">string</span></span></tt> used by the static site: transpiles .gzim to Python and reports cap (diagnostics).</p>
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
@@ -93,7 +93,7 @@
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    Transpile Genzimnify source to Python; never throws — returns a JSON envelope: {ok, code?, error?, line?, col?, diags: <a class="reference internal" href="#{line, col, message}">{line, col, message}</a>}
+    Transpile Genzimnify source to Python; never throws, returns a JSON envelope: {ok, code?, error?, line?, col?, diags: <a class="reference internal" href="#{line, col, message}">{line, col, message}</a>}
     
   </dd>
 </div>

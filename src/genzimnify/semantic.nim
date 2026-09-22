@@ -40,7 +40,7 @@ proc checkStmts(c: Ctx, stmts: seq[Stmt])
 proc checkFunc(c: Ctx, s: Stmt, isMethod: bool) =
   let (found, isC) = c.lookup(s.fname)
   if isC:
-    c.issue(s.line, s.col, "`" & s.fname & "` is locked — can't cook over a lock")
+    c.issue(s.line, s.col, "`" & s.fname & "` is locked, can't cook over a lock")
   c.declare(s.fname, false)
 
   if isMethod and (s.fparams.len == 0 or s.fparams[0].name != "fam"):
@@ -162,10 +162,10 @@ proc checkStmt(c: Ctx, s: Stmt) =
     let (found, isC) = c.lookup(s.vname)
     if isC:
       c.issue(s.line, s.col,
-        "`" & s.vname & "` is locked in fr — you can't rebind a `lock`")
+        "`" & s.vname & "` is locked in fr, you can't rebind a `lock`")
     elif found and s.isConst:
       c.issue(s.line, s.col,
-        "`" & s.vname & "` already exists — you can't upgrade it to `lock` mid-vibe")
+        "`" & s.vname & "` already exists, you can't upgrade it to `lock` mid-vibe")
     c.declare(s.vname, s.isConst)
     if s.vvalue != nil:
       c.checkExpr(s.vvalue)
@@ -174,10 +174,10 @@ proc checkStmt(c: Ctx, s: Stmt) =
       let (found, isC) = c.lookup(s.target.s)
       if not found:
         c.issue(s.line, s.col,
-          "`" & s.target.s & "` never got declared — hit it with a `let` first")
+          "`" & s.target.s & "` never got declared, hit it with a `let` first")
       elif isC:
         c.issue(s.line, s.col,
-          "`" & s.target.s & "` is locked — `lock` vars don't move")
+          "`" & s.target.s & "` is locked, `lock` vars don't move")
     c.checkExpr(s.target)
     c.checkExpr(s.value)
   of skExpr:
@@ -204,7 +204,7 @@ proc checkStmt(c: Ctx, s: Stmt) =
   of skClassDef:
     let (found, isC) = c.lookup(s.cname)
     if isC:
-      c.issue(s.line, s.col, "`" & s.cname & "` is locked — can't restack a lock")
+      c.issue(s.line, s.col, "`" & s.cname & "` is locked, can't restack a lock")
     c.declare(s.cname, false)
     for b in s.cbases:
       c.checkExpr(b)

@@ -1,4 +1,4 @@
-## gzimc — the Genzimnify compiler CLI.
+## gzimc, the Genzimnify compiler CLI.
 ## run / build / check / repl / init.
 
 import std/[os, strutils, syncio, sequtils]
@@ -26,7 +26,7 @@ proc failHard(msg: string): void =
 
 proc compileFile(path: string): tuple[code: string, maps: string] =
   if not fileExists(path):
-    failHard("no file called " & path & " — that's ghost")
+    failHard("no file called " & path & ", that's ghost")
   let src = readFile(path)
   try:
     result = compileSource(src, path)
@@ -50,14 +50,14 @@ proc cmdBuild(path: string) =
   let outPath = splitFile(path).dir / (splitFile(path).name & ".py")
   writeFile(outPath, code)
   writeFile(outPath & ".gzmap", maps)
-  echo "cooked " & outPath & " — go vibe"
+  echo "cooked " & outPath & ", go vibe"
 
 proc cmdCheck(path: string) =
   discard compileFile(path)
-  echo "no cap — " & path & " passes the vibecheck fr"
+  echo "no cap, " & path & " passes the vibecheck fr"
 
 const InitSample = """
-# main.gzim — welcome to the vibe
+# main.gzim, welcome to the vibe
 cook greet(name, greeting be "hey"):
     send it glow"{greeting} {name}!" fr
 
@@ -66,13 +66,13 @@ yap(call up greet("world") yo)
 
 proc cmdInit() =
   if fileExists("main.gzim"):
-    echo "main.gzim already exists — it's already vibing"
+    echo "main.gzim already exists, it's already vibing"
     return
   writeFile("main.gzim", InitSample)
-  echo "dropped main.gzim — let's get this bread"
+  echo "dropped main.gzim, let's get this bread"
 
 proc cmdRepl() =
-  echo "gzimc repl " & Version & " — type your vibes, blank line to run, ctrl-d to dip"
+  echo "gzimc repl " & Version & ", type your vibes, blank line to run, ctrl-d to dip"
   var session: seq[string] = @[]
   var line: string
   while true:
@@ -101,7 +101,7 @@ proc cmdRepl() =
 
 proc showHelp() =
   echo """
-gzimc — the Genzimnify compiler. Python in the streets, Gen Z in the sheets.
+gzimc, the Genzimnify compiler. Python in the streets, Gen Z in the sheets.
 
 usage:
   gzimc run <file.gzim>      transpile + run it (no cap)
@@ -137,15 +137,15 @@ proc main*() =
   case cmd
   of "run":
     if rest.len == 0:
-      failHard("run needs a file — gzimc run <file.gzim>")
+      failHard("run needs a file, gzimc run <file.gzim>")
     cmdRun(rest[0], rest[1 .. ^1])
   of "build":
     if rest.len == 0:
-      failHard("build needs a file — gzimc build <file.gzim>")
+      failHard("build needs a file, gzimc build <file.gzim>")
     cmdBuild(rest[0])
   of "check":
     if rest.len == 0:
-      failHard("check needs a file — gzimc check <file.gzim>")
+      failHard("check needs a file, gzimc check <file.gzim>")
     cmdCheck(rest[0])
   of "repl":
     cmdRepl()
