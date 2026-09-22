@@ -4,15 +4,17 @@ description = "Gen Z slang transpiles to Python. If it vibes, it compiles. Synta
 version = "0.1.0"
 schema_version = 1
 authors = ["Genzimnify"]
-repository = "https://github.com/genzimnify/genzimnify"
+repository = "https://github.com/wendellmeset/Genzimnify"
+languages = ["languages/genzimnify"]
+
+[lib]
+kind = "Rust"
+version = "0.7.0"
 
 [grammars.genzimnify]
-repository = "https://github.com/wendellmeset/Genzimnify.git"
-commit = "3efef3ee20a87dc9e3ddcdfdf53d136c9d54d82c"
+repository = "https://github.com/wendellmeset/Genzimnify"
+rev = "3efef3ee20a87dc9e3ddcdfdf53d136c9d54d82c"
 path = "grammars/genzimnify"
-
-[languages.genzimnify]
-path = "languages/genzimnify"
 
 [language_servers.gzim-lsp]
 languages = ["Genzimnify"]
