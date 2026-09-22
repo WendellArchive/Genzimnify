@@ -3,6 +3,10 @@
 target/
 dist/
 
+# Zed dev-extension build artifacts (grammar clones + compiled wasm)
+zed-genzimnify/grammars/
+zed-genzimnify/extension.wasm
+
 # Generated transpiler output
 *.gzmap
 
