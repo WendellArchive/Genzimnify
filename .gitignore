@@ -1,5 +1,5 @@
 # Build artifacts
-build/
+# (build/ is committed on purpose: prebuilt binaries ship with the repo)
 target/
 dist/
 
