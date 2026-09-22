@@ -1,0 +1,3 @@
+nimTitle	semantic	genzimnify/semantic.html	module src/genzimnify/semantic		0
+nim	Issue	genzimnify/semantic.html#Issue	object Issue		8
+nim	checkProgram	genzimnify/semantic.html#checkProgram,seq[Stmt]	proc checkProgram(program: seq[Stmt]): seq[Issue]		291

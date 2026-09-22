@@ -1,0 +1,2 @@
+nimTitle	lexer	genzimnify/lexer.html	module src/genzimnify/lexer		0
+nim	lex	genzimnify/lexer.html#lex,string	proc lex(source: string): seq[Token]		461

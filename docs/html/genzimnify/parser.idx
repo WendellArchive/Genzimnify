@@ -1,0 +1,4 @@
+nimTitle	parser	genzimnify/parser.html	module src/genzimnify/parser		0
+nim	parseExpr	genzimnify/parser.html#parseExpr,Parser,int	proc parseExpr(p: var Parser; prec: int = 0): Expr		73
+nim	parseExpressionString	genzimnify/parser.html#parseExpressionString,string,int	proc parseExpressionString(src: string; baseLine: int): Expr		146
+nim	parseProgram	genzimnify/parser.html#parseProgram,seq[Token]	proc parseProgram(toks: seq[Token]): tuple[program: seq[Stmt], usedAny: bool]		868

@@ -1,0 +1,3 @@
+nimTitle	errors	genzimnify/errors.html	module src/genzimnify/errors		0
+nim	GzimError	genzimnify/errors.html#GzimError	type GzimError		5
+nim	newGzimError	genzimnify/errors.html#newGzimError,string,int,int	proc newGzimError(msg: string; line = 0; col = 0): GzimError		9

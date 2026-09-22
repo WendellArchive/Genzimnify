@@ -1,0 +1,4 @@
+nimTitle	cli	genzimnify/cli.html	module src/genzimnify/cli		0
+nim	Version	genzimnify/cli.html#Version	const Version		7
+nim	compileSource	genzimnify/cli.html#compileSource,string,string	proc compileSource(src: string; filename: string): tuple[code: string, maps: string]		11
+nim	main	genzimnify/cli.html#main	proc main()		118

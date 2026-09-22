@@ -1,0 +1,5 @@
+nimTitle	emit	genzimnify/emit.html	module src/genzimnify/emit		0
+nim	Emitter	genzimnify/emit.html#Emitter	type Emitter		8
+nim	render	genzimnify/emit.html#render,Emitter	proc render(em: Emitter): string		39
+nim	renderMaps	genzimnify/emit.html#renderMaps,Emitter	proc renderMaps(em: Emitter): string		42
+nim	emitProgram	genzimnify/emit.html#emitProgram,seq[Stmt],bool	proc emitProgram(program: seq[Stmt]; usedAny: bool): Emitter		431
