@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genzimnify — vibe runner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="brand">Genzimnify</div>
+    <div class="tagline">python semantics, gen z syntax — if it vibes, it runs</div>
+    <div class="controls">
+      <select id="examples" title="load an example vibe">
+        <option value="">— examples —</option>
+      </select>
+      <label class="toggle"><input type="checkbox" id="showPy"> python</label>
+      <button id="runBtn" title="transpile + run (no cap)">run</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="editor-pane">
+      <textarea id="editor" spellcheck="false" autocapitalize="off"
+                autocomplete="off" autocorrect="off"></textarea>
+      <div id="diags"></div>
+    </section>
+    <section class="output-pane">
+      <pre id="output" aria-live="polite"></pre>
+    </section>
+  </main>
+
+  <footer>
+    <span id="status">ready</span>
+    <span class="hint">tab indents · enter keeps the indent · blank line in repl not needed here</span>
+  </footer>
+
+  <script src="transpiler.js"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

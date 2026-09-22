@@ -117,6 +117,24 @@ Semantic rules enforced at compile time: reassignment requires a prior `let`,
 inside loops, `fam` only inside clique methods, `wait up` only inside
 `on timing cook`, `drop` marks generators.
 
+## Browser playground (`site/`)
+
+Fully static — no build step, works from `file://` too:
+
+```sh
+# rebuild the in-browser transpiler (Nim -> JS) after touching the core:
+nim js -d:release --out:site/transpiler.js src/genzimnify/web.nim
+
+# then just open it:
+open site/index.html     # or: python3 -m http.server -d site
+```
+
+The transpiler core compiles to JavaScript (`nim js`), so code is transpiled
+client-side; the emitted Python runs via [Pyodide](https://pyodide.org)
+(Python→WASM, loaded from a CDN on first run). `yap back` pops a prompt,
+stdout lands in the right pane, and the "python" toggle shows the generated
+source.
+
 ## Tooling: LSP + Zed extension
 
 ### gzim-lsp (language server)

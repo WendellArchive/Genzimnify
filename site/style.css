@@ -1,0 +1,168 @@
+/* Genzimnify playground — very simple, very square. */
+
+* { border-radius: 0 !important; }
+
+:root {
+  --ink: #111;
+  --paper: #fff;
+  --muted: #888;
+  --line: #111;
+  --soft-line: #ccc;
+  --panel: #f6f6f6;
+  --cap: #c22;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+body {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* ---------------------------------------------------------------- header */
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.tagline {
+  color: var(--muted);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+select {
+  font: inherit;
+  padding: 4px 6px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+button {
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 14px;
+  border: 1px solid var(--line);
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+}
+
+button:hover { background: var(--paper); color: var(--ink); }
+button:active { transform: none; }
+button:disabled { opacity: 0.4; cursor: wait; }
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle input { accent-color: var(--ink); }
+
+/* ---------------------------------------------------------------- main */
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 0;
+}
+
+@media (max-width: 720px) {
+  main { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+}
+
+.editor-pane {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 0;
+  border-right: 1px solid var(--line);
+}
+
+@media (max-width: 720px) {
+  .editor-pane { border-right: none; border-bottom: 1px solid var(--line); }
+}
+
+textarea {
+  font: inherit;
+  line-height: 1.5;
+  width: 100%;
+  height: 100%;
+  padding: 10px 12px;
+  border: none;
+  outline: none;
+  resize: none;
+  background: var(--paper);
+  color: var(--ink);
+  tab-size: 4;
+}
+
+#diags {
+  max-height: 30%;
+  overflow: auto;
+  border-top: 1px solid var(--soft-line);
+  background: var(--panel);
+  padding: 6px 12px;
+}
+
+#diags .diag { padding: 2px 0; }
+#diags .diag .where { color: var(--muted); }
+#diags .diag .msg { color: var(--cap); }
+#diags .ok { color: var(--muted); }
+
+.output-pane { min-height: 0; }
+
+#output {
+  margin: 0;
+  height: 100%;
+  overflow: auto;
+  padding: 10px 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+#output .cap { color: var(--cap); }
+#output .py { color: var(--muted); }
+
+/* ---------------------------------------------------------------- footer */
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.hint { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
