@@ -1,6 +1,18 @@
-import json, subprocess, sys
+import json, os, subprocess
+from pathlib import Path
 
-p = subprocess.Popen(['/home/mattin/Documents/Projects/Genzimnify/build/gzim-lsp'],
+server = os.environ.get(
+    'GZIM_LSP_BIN',
+    str(Path(__file__).resolve().parents[1] / 'build' / 'gzim-lsp'),
+)
+expected_version = (Path(__file__).resolve().parents[1] / "src/genzimnify/version.nim").read_text().split('"')[1]
+version_result = subprocess.run([server, '--version'], capture_output=True, text=True, timeout=5)
+assert version_result.returncode == 0
+assert version_result.stdout.strip() == 'gzim-lsp ' + expected_version
+help_result = subprocess.run([server, '--help'], capture_output=True, text=True, timeout=5)
+assert help_result.returncode == 0 and 'usage:' in help_result.stdout
+assert subprocess.run([server, '--invalid'], capture_output=True, timeout=5).returncode == 1
+p = subprocess.Popen([str(server)],
                      stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
 def send(msg):
@@ -20,7 +32,9 @@ def recv():
     return json.loads(p.stdout.read(n).decode())
 
 send({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"rootUri":None}})
-print("INIT capabilities:", json.dumps(recv()["result"]["capabilities"])[:120])
+init = recv()["result"]
+assert init["serverInfo"]["version"] == expected_version
+print("INIT capabilities:", json.dumps(init["capabilities"])[:120])
 send({"jsonrpc":"2.0","method":"initialized","params":{}})
 
 text = '''lock PI be 3
@@ -50,6 +64,21 @@ print("SYMBOLS:", [s["name"] for s in recv()["result"]])
 # hover keyword 'lock' (line 0 char 1)
 send({"jsonrpc":"2.0","id":6,"method":"textDocument/hover","params":{"textDocument":{"uri":"file:///x/v.gzim"},"position":{"line":0,"character":1}}})
 print("HOVER kw:", recv()["result"]["contents"]["value"])
+# Partially typed strings must report errors and leave the server alive.
+send({"jsonrpc":"2.0","method":"textDocument/didChange","params":{
+    "textDocument":{"uri":"file:///x/v.gzim","version":2},
+    "contentChanges":[{"text":'let x be "'}]}})
+assert recv()["params"]["diagnostics"], 'unclosed string should produce a diagnostic'
+send({"jsonrpc":"2.0","method":"textDocument/didChange","params":{
+    "textDocument":{"uri":"file:///x/v.gzim","version":3},
+    "contentChanges":[{"text":'let x be "fixed"'}]}})
+assert recv()["params"]["diagnostics"] == []
+send({"jsonrpc":"2.0","id":8,"method":"textDocument/completion","params":{
+    "textDocument":{"uri":"file:///x/v.gzim"},"position":{"line":0,"character":1}}})
+assert any(item['label'] == 'x' for item in recv()['result']['items'])
+send({"jsonrpc":"2.0","method":"textDocument/didClose","params":{
+    "textDocument":{"uri":"file:///x/v.gzim"}}})
+assert recv()['params']['diagnostics'] == []
 send({"jsonrpc":"2.0","id":7,"method":"shutdown"})
 recv()
 send({"jsonrpc":"2.0","method":"exit"})

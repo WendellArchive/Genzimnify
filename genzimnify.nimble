@@ -1,9 +1,10 @@
 # Package
 
-version       = "1.0.0"
+version       = "2.0.6"
 author        = "Genzimnify"
-description   = "Genzimnify: Python semantics, Gen Z surface syntax, transpiles .gzim to Python. If it vibes, it compiles."
+description   = "Genzimnify: a native, Python-free programming language with Gen Z syntax."
 license       = "MIT"
 srcDir        = "src"
-bin           = @["genzimc", "gzim-lsp"]
-requires      = "nim >= 2.0.0"
+bin           = @["gzim", "genzimc"]
+namedBin["gzimlsp"] = "gzim-lsp"
+requires "nim >= 2.0.0"

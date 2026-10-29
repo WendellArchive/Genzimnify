@@ -1,0 +1,18 @@
+pull up helpers
+
+yap(call up helpers.triple(7) yo)
+
+let words be ["vibe", "check"]
+yap(call up "-".join(words) yo)
+
+let values be {"answer": 42}
+yap(call up values.get("missing", "fallback") yo)
+
+yap(args[0])
+
+roll with unlock(args[1], "w") as file:
+    call up file.write("native") yo
+
+roll with unlock(args[1]) as file:
+    yap(call up file.read() yo)
+

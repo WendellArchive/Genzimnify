@@ -1,0 +1,27 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Create and run a Genzimnify program."><title>First program | Genzimnify Docs</title><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"></head>
+<body><div id="siteHeader"></div><div class="layout"><aside class="sidebar" id="siteSidebar"></aside><main class="content"><article>
+  <div class="page-kicker">Get started</div><h1>First program</h1><p class="lead">A Genzimnify source file ends in <code>.gzim</code>. The native runtime parses, checks, and executes the file.</p>
+  <h2 id="create">Create a project</h2><p>Make an empty directory, enter it, and ask the CLI for a starter file:</p><pre><code>mkdir hello-gzim
+cd hello-gzim
+gzim init</code></pre><p>This creates <code>main.gzim</code> and a project manifest named <code>gzim.toml</code>. Replace the source file’s contents with:</p>
+  <pre><code class="language-gzim">let name be "world"
+
+cook greet(who):
+    send it glow"Hello, {who}"
+
+yap(call up greet(name) yo)</code></pre>
+  <h2 id="run">Run the program</h2><pre><code>gzim main.gzim</code></pre><p>Output:</p><pre><code>Hello, world</code></pre>
+  <p><code>gzim run main.gzim</code> is equivalent to <code>gzim main.gzim</code>. Both commands use the native runtime.</p>
+  <h2 id="understand">Understand the code</h2>
+  <p>Genzimnify is not Python and does not translate to Python during execution. The last column lists the closest Python syntax for comparison.</p>
+  <table><thead><tr><th>Genzimnify</th><th>Meaning</th><th>Python equivalent</th></tr></thead><tbody><tr><td><code>let name be "world"</code></td><td>Declare a mutable variable.</td><td><code>name = "world"</code></td></tr><tr><td><code>cook greet(who):</code></td><td>Define a function named <code>greet</code>.</td><td><code>def greet(who):</code></td></tr><tr><td><code>send it value</code></td><td>Return a value from a cook.</td><td><code>return value</code></td></tr><tr><td><code>glow"Hello {name}"</code></td><td>Interpolate expressions into text.</td><td><code>f"Hello {name}"</code></td></tr><tr><td><code>call up greet(name) yo</code></td><td>Call a function as an expression.</td><td><code>greet(name)</code></td></tr><tr><td><code>yap(value)</code></td><td>Print values to standard output.</td><td><code>print(value)</code></td></tr></tbody></table>
+  <h2 id="check">Check without running</h2><pre><code>gzim check main.gzim</code></pre><p>The semantic checker catches invalid assignments, locked-variable changes, misplaced returns, invalid loop control, and other caps before execution.</p>
+  <h2 id="arguments">Pass command-line arguments</h2><p>Arguments after the file name are available as the global <code>args</code> stack:</p><pre><code class="language-gzim">vibecheck call up how many(args) yo > 0:
+    yap(glow"yo {args[0]}")
+otherwise:
+    yap("yo stranger")</code></pre><pre><code>gzim main.gzim chat
+# yo chat</code></pre>
+  <h2 id="repl">REPL</h2><pre><code>gzim repl</code></pre><p>Type one or more lines, then submit a blank line to run the current input. Press Ctrl+D to leave.</p>
+  <h2 id="next">Related documentation</h2><div class="cards"><a class="card" href="language-guide.html"><div class="card-icon">GZ</div><h3>Language guide</h3><p>Reference for values, loops, cliques, exceptions, and other syntax.</p></a><a class="card" href="tooling.html"><div class="card-icon">⌁</div><h3>Editor setup</h3><p>Configuration for completion, hover, definitions, and diagnostics through <code>gzim-lsp</code>.</p></a></div>
+  <div class="page-nav"><a href="installation.html"><small>Previous</small>← Installation</a><a href="language-guide.html"><small>Next</small>Language guide →</a></div>
+</article></main><aside class="toc" id="pageToc"></aside></div><script src="app.js"></script></body></html>

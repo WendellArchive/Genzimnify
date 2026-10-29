@@ -1,8 +1,8 @@
 # Genzimnify: Language Design Document
 
-**Version:** 1.0  
-**Target:** Python 3.10+  
-**Implementation:** Nim  
+**Version:** 2.0.3
+**Target:** Native Windows 10+, macOS 12+, Ubuntu/Kali Linux
+**Implementation:** Nim compiler toolchain and standalone native runtime
 **File Extension:** `.gzim`  
 **Tagline:** Python semantics, Gen Z surface syntax. If it vibes, it compiles.
 
@@ -10,7 +10,7 @@
 
 ## 1. Overview
 
-Genzimnify is a Turing-complete programming language that source-to-source transpiles to Python. It is written in Nim and uses Gen Z slang for all keywords, built-ins, and control flow. The language is designed to be expressive, memeable, and fully compatible with Python’s runtime and ecosystem.
+Genzimnify is a Turing-complete programming language with a native runtime written in Nim. It uses Gen Z slang for keywords, built-ins, and control flow while keeping familiar Python-like semantics. Since 2.0, the normal `gzim` execution path evaluates checked Genzimnify directly and does not require Python. A separate Python emitter remains available as an optional interoperability target.
 
 A Genzimnify program is called a **vibe**. Running it is **vibing**. Errors are **cap**. Debugging is **checking the vibe**.
 
@@ -695,7 +695,7 @@ comprehension  := "[" expr "for real" IDENT "up in" expr ("sus" expr)? "]"
 
 ---
 
-## 16. Transpiler Architecture in Nim
+## 16. Native Runtime Architecture in Nim
 
 ### 16.1 Pipeline
 
@@ -703,8 +703,9 @@ comprehension  := "[" expr "for real" IDENT "up in" expr ("sus" expr)? "]"
 2. **Parser**, Recursive descent + Pratt parser for expressions. Produces an AST.
 3. **AST**, Nodes for Program, Block, VarDecl, Assign, If, While, For, FuncDef, ClassDef, Import, Try, Return, Break, Continue, Pass, ExprStmt, Call, Binary, Unary, Literal, Identifier, Attribute, Subscript, Lambda, Await, Yield, With, Match.
 4. **Semantic Analysis**, Scope checking, type hint validation, `fam` only in methods, `send it` only in functions, `dip`/`next` only in loops, `wait up` only in async.
-5. **Python Emitter**, Maps Genzimnify constructs to Python. Tracks indentation, handles `:` and dedent, emits `.py`.
-6. **Source Maps**, Maps generated Python lines back to `.gzim` lines for error reporting.
+5. **Native Runtime**, Evaluates the checked AST using Genzimnify values, scopes, functions, cliques, modules, exceptions, and file handles.
+6. **Module and Package Loader**, Resolves native modules, local `.gzim` files, and dependencies installed from `gzim.toml`.
+7. **Optional Interoperability**, The `py.*` bridge calls Python only when explicitly imported. The Python emitter remains an export target rather than the default runtime.
 
 ### 16.2 Suggested Nim Modules
 
@@ -713,7 +714,9 @@ comprehension  := "[" expr "for real" IDENT "up in" expr ("sus" expr)? "]"
 - `ast.nim`
 - `parser.nim`
 - `semantic.nim`
-- `emit_python.nim`
+- `runtime.nim`
+- `packages.nim`
+- `emit.nim`
 - `cli.nim`
 
 Use Nim’s `std/strutils`, `std/tables`, `std/options`, `std/os`, `std/parseopt`. A Pratt parser is ideal for expression precedence.
@@ -735,20 +738,19 @@ Use Nim’s `std/strutils`, `std/tables`, `std/options`, `std/os`, `std/parseopt
 
 ## 17. Tooling and Ecosystem
 
-- **Compiler:** `gzimc` / `genzimnify`
+- **Runtime and CLI:** `gzim` (`gzimc` remains a compatibility executable)
 - **CLI:**
-  - `gzimc run file.gzim`
-  - `gzimc build file.gzim` → `file.py`
-  - `gzimc check file.gzim`
-  - `gzimc repl`
-  - `gzimc init`
-- **Formatter:** `gzimfmt`
-- **Linter:** `gzimlint`
+  - `gzim run file.gzim`
+  - `gzim check file.gzim`
+  - `gzim repl`
+  - `gzim init`
+  - `gzim emit-python file.gzim` → optional `file.py`
+  - `gzim add/install/remove/packages`
 - **Language Server:** `gzim-lsp`
-- **Package Manager:** `gzimble`
-  - Manifest: `gzimble.toml` or `vibes.toml`
-  - Can wrap PyPI since target is Python.
-- **Testing Framework:** `vibecheck`
+- **Package Manager:** built into `gzim`
+  - Manifest: `gzim.toml`; resolved versions: `gzim.lock`
+  - Sources: Git URLs, pinned Git references, and local paths
+- **Optional Python libraries:** explicit `py.*` imports; never an implicit runtime dependency
 
 ---
 
@@ -827,22 +829,18 @@ Genzimnify is Turing complete because it has:
 - Data structures: lists, dicts, sets, tuples
 - Exceptions, async, generators, classes
 
-Since it transpiles directly to Python and preserves these constructs, it inherits Python’s Turing completeness.
+The native runtime directly implements these constructs, including unbounded program execution and recursion; Turing completeness does not depend on the optional Python emitter or bridge.
 
 ---
 
 ## 20. Future Work
 
-1. Finalize keyword list and reserve words.
-2. Write the formal grammar.
-3. Build the lexer in Nim.
-4. Build the Pratt parser and AST.
-5. Implement the Python emitter with indentation tracking.
-6. Add semantic checks and slang error messages.
-7. Build CLI, formatter, and REPL.
-8. Create a test suite of `.gzim` programs and expected `.py` output.
-9. Write docs and examples.
-10. Ship `gzimble` and the first package.
+1. Add a persistent native async event loop.
+2. Add a signed central package registry and lockfile format.
+3. Add a stable C ABI/FFI for native libraries.
+4. Add bytecode compilation and runtime optimization.
+5. Expand editor integrations beyond the existing LSP and Zed extension.
+6. Grow the native standard library while keeping optional bridges explicit.
 
 ---
 

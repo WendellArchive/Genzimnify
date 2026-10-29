@@ -1,0 +1,92 @@
+name: Release native binaries
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            artifact: linux-x86_64
+            executable: gzim
+          - os: windows-2022
+            artifact: windows-x86_64
+            executable: gzim.exe
+          - os: macos-15
+            artifact: macos-arm64
+            executable: gzim
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Nim
+        uses: jiro4989/setup-nim-action@v2
+        with:
+          nim-version: "2.2.x"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Linux graphics build dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libasound2-dev libx11-dev libxrandr-dev libxi-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev
+      - name: Build native graphics backend
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cmake -S native/rizzgame -B build/rizzgame -G "Visual Studio 17 2022" -A x64 -DRIZZGAME_OUTPUT_DIR="$PWD/dist"
+          else
+            cmake -S native/rizzgame -B build/rizzgame -DCMAKE_BUILD_TYPE=Release -DRIZZGAME_OUTPUT_DIR="$PWD/dist"
+          fi
+          cmake --build build/rizzgame --config Release --parallel 4
+      - name: Build runtime and language server
+        shell: bash
+        run: |
+          mkdir -p dist
+          if [ "$RUNNER_OS" = "macOS" ]; then export MACOSX_DEPLOYMENT_TARGET=12.0; fi
+          nim c -d:release --out:dist/${{ matrix.executable }} src/gzim.nim
+          nim c -d:release --out:dist/gzim-lsp${{ runner.os == 'Windows' && '.exe' || '' }} src/gzimlsp.nim
+          expected="${GITHUB_REF_NAME#v}"
+          actual="$(dist/${{ matrix.executable }} --version --offline)"
+          test "$actual" = "gzim $expected"
+          dist/${{ matrix.executable }} eval $'pull up rizzgame as rg\nyap(call up rg.get_backend() yo)'
+          printf '' | dist/gzim-lsp${{ runner.os == 'Windows' && '.exe' || '' }}
+          cp LICENSE README.md dist/
+      - name: Package Unix archive
+        if: runner.os != 'Windows'
+        shell: bash
+        run: tar -C dist -czf genzimnify-${{ matrix.artifact }}.tar.gz .
+      - name: Package Windows archive
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Compress-Archive -Path dist/* -DestinationPath genzimnify-${{ matrix.artifact }}.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: genzimnify-${{ matrix.artifact }}
+          path: genzimnify-${{ matrix.artifact }}.*
+
+  publish:
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: release
+          merge-multiple: true
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          cd release
+          sha256sum genzimnify-* > SHA256SUMS
+          notes="$GITHUB_WORKSPACE/release-notes/${GITHUB_REF_NAME}.md"
+          if [ -f "$notes" ]; then
+            gh release create "$GITHUB_REF_NAME" ./* --notes-file "$notes" --title "Genzimnify $GITHUB_REF_NAME"
+          else
+            gh release create "$GITHUB_REF_NAME" ./* --generate-notes --title "Genzimnify $GITHUB_REF_NAME"
+          fi

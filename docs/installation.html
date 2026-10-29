@@ -1,0 +1,27 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Install Genzimnify on macOS, Windows, Ubuntu, or Kali Linux."><title>Install Genzimnify | Docs</title><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"></head>
+<body><div id="siteHeader"></div><div class="layout"><aside class="sidebar" id="siteSidebar"></aside><main class="content"><article>
+  <div class="page-kicker">Get started</div><h1>Install Genzimnify</h1><p class="lead">Install the native <code>gzim</code> runtime and <code>gzim-lsp</code> language server. Release packages are self-contained and do not require Python or Nim.</p>
+  <h2 id="requirements">Supported systems</h2>
+  <table><thead><tr><th>System</th><th>Architectures</th><th>Package</th></tr></thead><tbody><tr><td>Windows 10 or newer</td><td>x86_64</td><td>ZIP / PowerShell</td></tr><tr><td>macOS</td><td>Apple Silicon</td><td>Homebrew / TAR.GZ</td></tr><tr><td>Ubuntu 22.04+ and Kali Linux</td><td>x86_64</td><td>Shell installer / TAR.GZ</td></tr></tbody></table>
+  <div class="callout warning"><div class="callout-title">Intel Mac support</div><p>Genzimnify 2.0.2 and newer no longer provide macOS x86_64 builds. Version 2.0.1 is the final release with an Intel Mac binary.</p></div>
+  <h2 id="homebrew">Homebrew on macOS</h2><p>Tap the repository and build the current native release:</p>
+  <pre><code>brew tap obliv1onis/genzimnify https://github.com/Obliv1onis/Genzimnify
+brew install --HEAD genzimnify</code></pre>
+  <p>Homebrew installs both <code>gzim</code> and <code>gzim-lsp</code>. Homebrew handles the Nim build dependency; installed programs do not require Nim.</p>
+  <h2 id="unix-installer">macOS, Ubuntu, and Kali installer</h2><pre><code>curl -fsSL https://raw.githubusercontent.com/Obliv1onis/Genzimnify/master/scripts/install.sh | sh</code></pre>
+  <p>The installer detects the operating system and CPU, downloads the latest release archive, verifies its SHA-256 checksum, and installs binaries into <code>~/.local/bin</code>. <code>GZIM_INSTALL_ROOT</code> changes the destination.</p>
+  <pre><code>GZIM_INSTALL_ROOT=/usr/local/bin sh install.sh</code></pre>
+  <h2 id="windows">Windows 10+</h2><p>Open PowerShell and run:</p>
+  <pre><code>irm https://raw.githubusercontent.com/Obliv1onis/Genzimnify/master/scripts/install.ps1 | iex</code></pre>
+  <p>The installer places the executables under <code>%LOCALAPPDATA%\Genzimnify\bin</code> and adds that directory to the user <code>PATH</code>. The updated <code>PATH</code> applies to new terminal sessions.</p>
+  <h2 id="manual">Manual installation</h2>
+  <div class="steps"><div class="step"><h3>Download a release</h3><p>Open the GitHub Releases page and select the archive matching the operating system and CPU.</p></div><div class="step"><h3>Extract the archive</h3><p>Move <code>gzim</code> and <code>gzim-lsp</code> (or the Windows <code>.exe</code> files) into an installation directory.</p></div><div class="step"><h3>Add the directory to PATH</h3><p>Shells and editors use <code>PATH</code> to locate the runtime.</p></div></div>
+  <h2 id="verify">Verify the installation</h2><pre><code>gzim --version
+gzim doctor</code></pre><p>The output includes version <code>2.0.6</code>, <code>runtime: native Nim (Python-free)</code>, and the detected platform.</p>
+  <div class="callout warning"><div class="callout-title">Release archives vs. source builds</div><p>Release archives require no development toolchain. Homebrew <code>--HEAD</code> and source builds compile Genzimnify with Nim first, but the resulting runtime remains independent.</p></div>
+  <h2 id="source">Build from source</h2><pre><code>git clone https://github.com/Obliv1onis/Genzimnify.git
+cd Genzimnify
+nimble build -d:release
+./gzim doctor</code></pre>
+  <div class="page-nav"><a href="index.html"><small>Previous</small>← Documentation home</a><a href="getting-started.html"><small>Next</small>First program →</a></div>
+</article></main><aside class="toc" id="pageToc"></aside></div><script src="app.js"></script></body></html>

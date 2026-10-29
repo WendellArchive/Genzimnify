@@ -1,0 +1,105 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="The complete Genzimnify language guide."><title>Language guide | Genzimnify Docs</title><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"></head>
+<body><div id="siteHeader"></div><div class="layout"><aside class="sidebar" id="siteSidebar"></aside><main class="content"><article>
+  <div class="page-kicker">Language</div><h1>Language guide</h1><p class="lead">Genzimnify is indentation-based, dynamically executed, and checked before it runs. Familiar programming ideas use a distinct vocabulary, while the native runtime owns their behavior.</p>
+  <h2 id="python-map">Python-to-Genzimnify map</h2><p>The two languages share many semantics, but Genzimnify is parsed and executed by its own native runtime. These are syntax equivalents, not a Python translation layer.</p><table><thead><tr><th>Genzimnify</th><th>Python</th><th>Meaning</th></tr></thead><tbody><tr><td><code>nocap</code> / <code>cap</code> / <code>ghost</code></td><td><code>True</code> / <code>False</code> / <code>None</code></td><td>Literal values</td></tr><tr><td><code>let x be 1</code> / <code>x be 2</code></td><td><code>x = 1</code> / <code>x = 2</code></td><td>Binding and assignment</td></tr><tr><td><code>vibecheck</code> / <code>or</code> / <code>otherwise</code></td><td><code>if</code> / <code>elif</code> / <code>else</code></td><td>Conditional branches</td></tr><tr><td><code>vibe</code></td><td><code>while</code></td><td>Conditional loop</td></tr><tr><td><code>for real x up in values</code></td><td><code>for x in values</code></td><td>Iteration</td></tr><tr><td><code>cook</code> / <code>send it</code></td><td><code>def</code> / <code>return</code></td><td>Functions</td></tr><tr><td><code>mini vibe</code> / <code>drop</code></td><td><code>lambda</code> / <code>yield</code></td><td>Anonymous functions and generators</td></tr><tr><td><code>clique</code> / <code>fam</code> / <code>new</code></td><td><code>class</code> / <code>self</code> / <code>__init__</code></td><td>Classes and instances</td></tr><tr><td><code>f_around</code> / <code>find_out</code> / <code>no_matter_what</code></td><td><code>try</code> / <code>except</code> / <code>finally</code></td><td>Exception handling</td></tr><tr><td><code>throw shade</code></td><td><code>raise</code></td><td>Raise an exception</td></tr><tr><td><code>pull up</code> / <code>outta … pull up</code></td><td><code>import</code> / <code>from … import</code></td><td>Modules</td></tr></tbody></table>
+  <h2 id="files">Files, blocks, and comments</h2><p>Source files use the <code>.gzim</code> extension. Newlines end statements; <code>fr</code> can explicitly end a statement or separate statements on one line. A colon opens a block and indentation defines its body.</p><pre><code class="language-gzim"># one-line comment
+#[[
+  multi-line comment
+]]#
+
+vibecheck nocap:
+    yap("indentation is syntax") fr yap("fr can share a line")</code></pre>
+  <h2 id="values">Values and variables</h2><p><code>let</code> declares a mutable name. <code>lock</code> declares a name that cannot be rebound. Reassignment uses <code>be</code>.</p><pre><code class="language-gzim">let score be 10
+score be score + 5
+
+lock APP_NAME be "Genzimnify"
+yap(APP_NAME, score)</code></pre>
+  <table><thead><tr><th>Value</th><th>Genzimnify</th><th>Python equivalent</th><th>Description</th></tr></thead><tbody><tr><td>Integer / float</td><td><code>42</code>, <code>3.14</code></td><td><code>42</code>, <code>3.14</code></td><td>Native numeric values.</td></tr><tr><td>Text</td><td><code>"hello"</code></td><td><code>"hello"</code></td><td>Unicode text and multiline strings.</td></tr><tr><td>Truth</td><td><code>nocap</code>, <code>cap</code></td><td><code>True</code>, <code>False</code></td><td>Boolean values.</td></tr><tr><td>None</td><td><code>ghost</code></td><td><code>None</code></td><td>Absence of a value.</td></tr><tr><td>Stack</td><td><code>[1, 2, 3]</code></td><td><code>[1, 2, 3]</code></td><td>Like a Python list.</td></tr><tr><td>Crew</td><td><code>(1, 2)</code></td><td><code>(1, 2)</code></td><td>Like a Python tuple.</td></tr><tr><td>Squad</td><td><code>{1, 2}</code></td><td><code>{1, 2}</code></td><td>Like a Python set.</td></tr><tr><td>Map</td><td><code>{"a": 1}</code></td><td><code>{"a": 1}</code></td><td>Like a Python dict.</td></tr></tbody></table>
+  <h3 id="glow">Glow strings</h3><pre><code class="language-gzim">let name be "chat"
+let score be 7
+yap(glow"yo {name}, score: {score:03d}")</code></pre><p>Use doubled braces—<code>{{</code> and <code>}}</code>—for literal braces.</p>
+  <h2 id="operators">Operators</h2><table><thead><tr><th>Genzimnify</th><th>Python equivalent</th><th>Purpose</th></tr></thead><tbody><tr><td><code>+ - * / // % **</code></td><td>Same syntax</td><td>Arithmetic, floor division, remainder, and power.</td></tr><tr><td><code>same as</code>, <code>nah</code></td><td><code>==</code>, <code>!=</code></td><td>Equality and inequality.</td></tr><tr><td><code>&lt; &lt;= &gt; &gt;=</code></td><td>Same syntax</td><td>Ordering.</td></tr><tr><td><code>both</code>, <code>either</code>, <code>aint</code></td><td><code>and</code>, <code>or</code>, <code>not</code></td><td>Boolean logic.</td></tr><tr><td><code>up in</code>, <code>aint up in</code></td><td><code>in</code>, <code>not in</code></td><td>Membership.</td></tr><tr><td><code>literally</code>, <code>aint literally</code></td><td><code>is</code>, <code>is not</code></td><td>Identity.</td></tr></tbody></table>
+  <h2 id="control-flow">Control flow</h2><h3>Conditions</h3><pre><code class="language-gzim">vibecheck score > 90:
+    yap("elite")
+or score > 60:
+    yap("we move")
+otherwise:
+    yap("time to lock in")</code></pre>
+  <h3>Loops</h3><pre><code class="language-gzim">let i be 0
+vibe i < 3:
+    yap(i)
+    i be i + 1
+
+for real name up in ["amy", "bob"]:
+    vibecheck name same as "bob":
+        next
+    yap(name)</code></pre><p><code>dip</code> breaks a loop. <code>next</code> continues with its next item.</p>
+  <h3>Pattern matching</h3><pre><code class="language-gzim">fit check status:
+    fit 200:
+        yap("ok")
+    fit 404:
+        yap("ghosted")
+    otherwise:
+        yap("unknown")</code></pre>
+  <h2 id="functions">Cooks and calls</h2><p>A function is a <code>cook</code>. Return with <code>send it</code>. A call is enclosed by <code>call up</code> and <code>yo</code> when it appears as a language-level call expression.</p><pre><code class="language-gzim">cook add(a, b be 1):
+    send it a + b
+
+let answer be call up add(41) yo
+yap(answer)</code></pre>
+  <h3>Mini vibes</h3><pre><code class="language-gzim">let double be mini vibe(x): x * 2
+yap(call up double(21) yo)</code></pre>
+  <h3>Generators</h3><p><code>drop</code> yields values from a cook:</p><pre><code class="language-gzim">cook countdown(n):
+    vibe n > 0:
+        drop n
+        n be n - 1
+
+for real n up in call up countdown(3) yo:
+    yap(n)</code></pre>
+  <h2 id="collections">Collections and comprehensions</h2><pre><code class="language-gzim">let squares be [n * n for real n up in vibes(6)]
+let evens be [n for real n up in squares sus n % 2 same as 0]
+let profile be {"name": "chat", "score": 100}
+
+yap(evens)
+yap(profile["name"])</code></pre><p>Subscripts and slices support negative positions and steps: <code>items[-1]</code>, <code>items[1:4]</code>, and <code>text[::-1]</code>.</p>
+  <h2 id="classes">Cliques</h2><p>A class is a <code>clique</code>. The instance parameter is <code>fam</code>, and its initializer is <code>new</code>. Inherited methods can call <code>ancestor</code>.</p><pre><code class="language-gzim">clique Animal:
+    cook new(fam, name):
+        fam.name be name
+
+    cook speak(fam):
+        yap(glow"{fam.name} makes a sound")
+
+clique Dog(Animal):
+    cook new(fam, name):
+        ancestor.new(fam, name)
+
+    cook speak(fam):
+        yap(glow"{fam.name} says woof")
+
+let dog be call up Dog("Bit") yo
+call up dog.speak() yo</code></pre>
+  <h2 id="errors">Errors and cleanup</h2><pre><code class="language-gzim">f_around:
+    vibecheck amount < 0:
+        throw shade BadVibe("amount must be positive")
+find_out BadVibe as error:
+    yap(glow"caught: {error}")
+no_matter_what:
+    yap("cleanup always runs")</code></pre><p>Native exception names include <code>L</code>, <code>BadVibe</code>, <code>WrongType</code>, <code>OutOfPocket</code>, <code>Ghosted</code>, <code>SplitByZero</code>, <code>NoPullUp</code>, and <code>CapDetected</code>.</p>
+  <h2 id="modules">Modules</h2><p>Import a native or local module with <code>pull up</code>. Local modules are other <code>.gzim</code> files resolved relative to the importing file.</p><pre><code class="language-gzim">pull up math
+outta math pull up sqrt as root
+
+yap(call up math.floor(2.9) yo)
+yap(call up root(81) yo)</code></pre>
+  <h2 id="types">Type hints</h2><p>Hints improve documentation and editor information. The native runtime remains dynamically typed.</p><pre><code class="language-gzim">cook label(score as num, name as text) gives text:
+    send it glow"{name}: {score}"
+
+let ids be [1, 2, 3] as stack[num]</code></pre><p>Built-in hint names are <code>num</code>, <code>drip</code>, <code>text</code>, <code>truth</code>, <code>stack</code>, <code>map</code>, <code>squad</code>, <code>crew</code>, <code>whatever</code>, and nullable <code>?</code>.</p>
+  <h2 id="async">Async syntax</h2><pre><code class="language-gzim">pull up timing
+
+on timing cook main():
+    wait up timing.sleep(0.1)
+    yap("done")
+
+call up timing.run(main()) yo</code></pre><div class="callout warning"><div class="callout-title">Current native runtime behavior</div><p>In version 2.0.2, the native scheduler executes timing tasks cooperatively and <code>timing.sleep</code> is non-blocking. A full event loop is not implemented.</p></div>
+  <h2 id="comparison-chains">Combining comparisons</h2><p>Starting in 2.0.5, unparenthesized comparison chains such as <code>1 &lt; x &lt; 10</code> are rejected. Write <code>1 &lt; x both x &lt; 10</code>. Explicit parentheses such as <code>(a &lt; b) == nocap</code> remain supported.</p>
+<div class="page-nav"><a href="getting-started.html"><small>Previous</small>← First program</a><a href="stdlib.html"><small>Next</small>Standard library →</a></div>
+</article></main><aside class="toc" id="pageToc"></aside></div><script src="app.js"></script></body></html>

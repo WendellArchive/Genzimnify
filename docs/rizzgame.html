@@ -1,0 +1,55 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Build 2D games in native Genzimnify with rizzgame."><title>rizzgame | Genzimnify Docs</title><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"></head>
+<body><div id="siteHeader"></div><div class="layout"><aside class="sidebar" id="siteSidebar"></aside><main class="content"><article>
+  <div class="page-kicker">Native game library</div><h1>rizzgame</h1><p class="lead">Create GPU-accelerated 2D games without Python. The API follows familiar pygame patterns and adds cameras, particles, sprite-sheet animation, and easing.</p>
+  <h2 id="start">First window</h2><pre><code class="language-gzim">pull up rizzgame as rg
+let screen be call up rg.display.pull_up([800, 450]) yo
+let clock be call up rg.time.Clock() yo
+let running be nocap
+vibe running:
+    for real event up in call up rg.event.catch_vibes() yo:
+        vibecheck event.type == rg.QUIT: running be cap
+    call up screen.glow_up([18, 22, 36]) yo
+    call up rg.draw.flex_circle(screen, [92, 247, 224], [400, 225], 48) yo
+    call up rg.display.show_off() yo
+    call up clock.keep_up(60) yo
+call up rg.dip_out() yo</code></pre><p>Run <code>gzim examples/rizzgame/neon_arena.gzim</code> for an interactive demo. Arrow keys or WASD move; Space triggers particles and camera shake. The optional <code>--frames 120</code> argument stops after 120 frames. You can also <a href="rizzgame-studio.html">run a starter game in Studio</a> with a browser canvas preview.</p>
+  <h2 id="slang">Gen Z names and pygame equivalents</h2><p>The Gen Z names are the recommended style for new Genzimnify games. Familiar pygame-style names remain as aliases, so existing examples keep working.</p><table><thead><tr><th>Gen Z name</th><th>pygame-style alias</th><th>Use</th></tr></thead><tbody>
+    <tr><td><code>rg.display.pull_up(size)</code></td><td><code>set_mode(size)</code></td><td>Open the game window.</td></tr>
+    <tr><td><code>rg.display.show_off()</code></td><td><code>flip()</code></td><td>Present the finished frame.</td></tr>
+    <tr><td><code>rg.event.catch_vibes()</code></td><td><code>get()</code></td><td>Read input and window events.</td></tr>
+    <tr><td><code>rg.key.check_the_vibe()</code></td><td><code>get_pressed()</code></td><td>Check which keys are held.</td></tr>
+    <tr><td><code>screen.glow_up(color)</code></td><td><code>fill(color)</code></td><td>Paint the background.</td></tr>
+    <tr><td><code>rg.draw.flex_rect/circle/line(...)</code></td><td><code>draw.rect/circle/line(...)</code></td><td>Draw shapes.</td></tr>
+    <tr><td><code>rg.draw.yap_text(...)</code></td><td><code>draw.text(...)</code></td><td>Draw text.</td></tr>
+    <tr><td><code>clock.keep_up(fps)</code></td><td><code>tick(fps)</code></td><td>Limit the frame rate and get elapsed milliseconds.</td></tr>
+    <tr><td><code>rg.dip_out()</code></td><td><code>quit()</code></td><td>Close graphics and audio resources.</td></tr>
+  </tbody></table><p>Names such as <code>Rect</code>, <code>Surface</code>, and <code>Clock</code> remain descriptive type names. The <code>pull up</code> import and <code>call up ... yo</code> call syntax are Genzimnify language features.</p>
+    <h2 id="install">Installation and runtime</h2><p>Graphics-enabled release archives include raylib 5.5 next to <code>gzim</code>. Official installers copy it alongside the executable. Source builds can run <code>cmake -S native/rizzgame -B build/rizzgame -DCMAKE_BUILD_TYPE=Release -DRIZZGAME_OUTPUT_DIR="$PWD/build"</code> followed by <code>cmake --build build/rizzgame --config Release</code>. CMake downloads pinned raylib 5.5 source and verifies its checksum. The graphics backend loads only when a window or audio device is requested. Rectangle, vector, camera, particle, and timing helpers work without it. <code>GZIM_RAYLIB</code> may point to a compatible raylib 5.5 shared library. A graphical desktop and working OpenGL driver are needed for windows; Linux headless tests can use Xvfb.</p>
+  <h2 id="api">Modules and pygame-style equivalents</h2><table><thead><tr><th>rizzgame</th><th>What it provides</th></tr></thead><tbody>
+    <tr><td><code>display</code></td><td><code>set_mode([width,height],flags)</code>, <code>set_caption(title)</code>, <code>get_surface()</code>, <code>get_size()</code>, <code>flip()</code>.</td></tr>
+    <tr><td><code>event</code>, <code>key</code>, <code>mouse</code></td><td><code>event.get()</code> returns event objects with <code>.type</code>, <code>.key</code>, <code>.pos</code>, <code>.rel</code>, or <code>.button</code> as relevant. <code>key.get_pressed()</code> returns a boolean stack indexed by <code>K_*</code> constants; mouse provides position and pressed buttons.</td></tr>
+    <tr><td><code>draw</code></td><td><code>rect(surface,color,rect,width=0)</code>, <code>circle(surface,color,center,radius,width=0)</code>, <code>line(surface,color,start,end,width=1)</code>, and <code>text(surface,text,position,size=20,color=[255,255,255])</code>.</td></tr>
+    <tr><td><code>image</code>, <code>font</code></td><td><code>image.load(path)</code>, <code>image.save(offscreen_surface,path)</code>, <code>font.Font(path_or_ghost,size,characters=ghost)</code> with <code>.render(text,antialias,color)</code>. PNG and other raylib image formats are accepted.</td></tr>
+    <tr><td><code>mixer</code></td><td><code>mixer.init()</code>, <code>mixer.Sound(path)</code>, and <code>mixer.music.load(path)</code>. Sounds support <code>play</code>, <code>stop</code>, <code>get_busy</code>, <code>set_volume</code>, <code>set_pitch</code>, <code>unload</code>. Music streams add <code>pause</code>, <code>resume</code>, and <code>update</code>; call <code>update()</code> once per frame while playing.</td></tr>
+    <tr><td><code>time</code></td><td><code>Clock().tick(fps)</code> returns elapsed milliseconds; <code>get_fps()</code>, <code>get_time()</code>, <code>get_ticks()</code>, and <code>wait(ms)</code>.</td></tr>
+    <tr><td><code>math</code></td><td><code>Vector2(x,y)</code> with vector methods; <code>lerp</code>, <code>clamp</code>, <code>smoothstep</code>, and <code>ease(t,curve)</code>.</td></tr>
+    <tr><td><code>camera</code>, <code>particles</code>, <code>animation</code></td><td><code>Camera(x,y,zoom,rotation)</code>, <code>Emitter(max_particles)</code>, and <code>SpriteSheet(surface,frame_width,frame_height,fps=12,loop=nocap)</code>.</td></tr>
+  </tbody></table>
+  <h2 id="surfaces">Surfaces and rectangles</h2><p><code>Surface([width,height])</code> creates an offscreen GPU target. A surface has <code>fill(color)</code>, <code>blit(source,[x,y],rotation=0,scale=1,tint=[255,255,255])</code>, <code>get_size()</code>, <code>get_width()</code>, <code>get_height()</code>, <code>get_rect()</code>, <code>get_at([x,y])</code> for offscreen surfaces, and <code>unload()</code>. Loaded images are read-only surfaces: blit them onto an offscreen Surface or the display. Drawing onto a surface currently replaces the color under each shape; alpha blending follows raylib's normal blending rules. <code>image.save()</code> and <code>get_at()</code> work on offscreen surfaces, not the display.</p><p><code>Rect(x,y,width,height)</code> has writable <code>x</code>, <code>y</code>, <code>width</code>, <code>height</code>, <code>left</code>, <code>top</code>, <code>right</code>, <code>bottom</code>, <code>center</code>, and <code>size</code>. Methods include <code>colliderect(other)</code>, <code>collidepoint([x,y])</code>, <code>move(dx,dy)</code>, <code>inflate(dx,dy)</code>, and <code>copy()</code>.</p>
+  <h2 id="effects">Camera, particles, animation</h2><pre><code class="language-gzim">let camera be call up rg.camera.Camera(0, 0, 1) yo
+let sparks be call up rg.particles.Emitter(2000) yo
+let atlas be call up rg.image.load("hero.png") yo
+let walk be call up rg.animation.SpriteSheet(atlas, 32, 32, 12) yo
+let dt be call up clock.tick(60) yo / 1000
+call up camera.follow([player.x, player.y], 8, dt) yo
+call up camera.update(dt) yo
+call up sparks.burst([player.x, player.y], 20, [255, 120, 30], 120, 0.5, 3) yo
+call up sparks.update(dt, 90) yo
+call up walk.update(dt) yo
+call up camera.begin() yo
+call up walk.draw(screen, [player.x, player.y]) yo
+call up sparks.draw(screen) yo
+call up camera.end() yo</code></pre><p>The camera also supports <code>shake(strength,duration)</code>, <code>world_to_screen(position)</code>, and <code>screen_to_world(position)</code>. An animation has <code>frame</code>, <code>frame_count</code>, <code>finished</code>, and <code>reset()</code>. Sprite sheets use complete equal-sized frames in row-major order. The source image must stay loaded while the animation is drawn. Easing curves: <code>linear</code>, <code>in_quad</code>, <code>out_quad</code>, <code>in_out_cubic</code>, and <code>out_back</code>.</p>
+  <h2 id="scope">Current scope</h2><p>This is a native 2D API inspired by pygame, not an implementation of the whole pygame package. It currently provides no 3D scene API, joystick/gamepad support, masks, transformations of arbitrary offscreen render targets, shader authoring, or screen capture. The <code>pygame</code> Python package is not imported. Use <code>quit()</code> to close the window and audio device, and <code>unload()</code> to free image, font, sound, or offscreen surface resources before then. A normal program exit also cleans up its open resources. Invalid handles after <code>quit()</code> raise a language error.</p>
+  <div class="page-nav"><a href="stdlib.html"><small>Previous</small>← Standard library</a><a href="rizzgame-studio.html"><small>Next</small>Studio tutorial →</a></div>
+</article></main><aside class="toc" id="pageToc"></aside></div><script src="app.js"></script></body></html>

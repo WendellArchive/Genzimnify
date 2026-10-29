@@ -1,0 +1,83 @@
+# Arrow keys / WASD move. Space bursts particles and shakes the camera.
+# Run with --frames 120 for a bounded demo, or --capture scene.png to save a frame.
+pull up rizzgame as rg
+
+call up rg.init() yo
+call up rg.display.set_caption("Rizzgame | Neon Arena") yo
+let screen be call up rg.display.pull_up([960, 600]) yo
+let canvas be call up rg.Surface([960, 600]) yo
+let clock be call up rg.time.Clock() yo
+let camera be call up rg.camera.Camera() yo
+let sparks be call up rg.particles.Emitter(3000) yo
+let player be call up rg.Rect(455, 275, 36, 36) yo
+let atlas be call up rg.Surface([72, 36]) yo
+call up atlas.glow_up([0, 0, 0, 0]) yo
+call up rg.draw.flex_circle(atlas, [42, 126, 126], [18, 18], 18) yo
+call up rg.draw.flex_rect(atlas, [92, 247, 224], [2, 2, 32, 32]) yo
+call up rg.draw.flex_rect(atlas, [225, 255, 249], [10, 10, 16, 16]) yo
+call up rg.draw.flex_circle(atlas, [42, 126, 126], [54, 18], 18) yo
+call up rg.draw.flex_rect(atlas, [92, 247, 224], [38, 2, 32, 32]) yo
+call up rg.draw.flex_rect(atlas, [255, 210, 95], [46, 10, 16, 16]) yo
+let sprite be call up rg.animation.SpriteSheet(atlas, 36, 36, 6) yo
+let running be nocap
+let frame be 0
+let elapsed be 0.0
+let limit be 0
+let capture be ""
+vibecheck how many(args) >= 2:
+    vibecheck args[0] == "--frames":
+        limit be num(args[1])
+    or args[0] == "--capture":
+        capture be args[1]
+        limit be 90
+
+vibe running:
+    let dt be call up clock.keep_up(60) yo / 1000
+    elapsed be elapsed + dt
+    for real event up in call up rg.event.catch_vibes() yo:
+        vibecheck event.type == rg.QUIT:
+            running be cap
+        or event.type == rg.KEYDOWN:
+            vibecheck event.key == rg.K_ESCAPE:
+                running be cap
+            or event.key == rg.K_SPACE:
+                call up sparks.burst(player.center, 150, [255, 89, 180], 220, 1.2, 5) yo
+                call up camera.shake(7, 0.25) yo
+    let keys be call up rg.key.check_the_vibe() yo
+    vibecheck keys[rg.K_LEFT] either keys[rg.K_a]:
+        player.x be player.x - 280 * dt
+    vibecheck keys[rg.K_RIGHT] either keys[rg.K_d]:
+        player.x be player.x + 280 * dt
+    vibecheck keys[rg.K_UP] either keys[rg.K_w]:
+        player.y be player.y - 280 * dt
+    vibecheck keys[rg.K_DOWN] either keys[rg.K_s]:
+        player.y be player.y + 280 * dt
+    player.x be call up rg.math.clamp(player.x, 35, 890) yo
+    player.y be call up rg.math.clamp(player.y, 120, 520) yo
+    vibecheck frame % 6 == 0:
+        call up sparks.burst(player.center, 10, [81, 238, 220], 100, 1.5, 4) yo
+    call up sparks.update(dt, 45) yo
+    call up sprite.update(dt) yo
+    call up camera.update(dt) yo
+    call up canvas.glow_up([12, 15, 30]) yo
+    call up camera.begin() yo
+    for real x up in vibes(0, 961, 40):
+        call up rg.draw.flex_line(canvas, [24, 34, 57], [x, 100], [x, 550]) yo
+    for real y up in vibes(110, 551, 40):
+        call up rg.draw.flex_line(canvas, [24, 34, 57], [30, y], [930, y]) yo
+    call up rg.draw.flex_rect(canvas, [64, 97, 126], [30, 100, 900, 450], 2) yo
+    call up sparks.draw(canvas) yo
+    call up sprite.draw(canvas, [player.x, player.y]) yo
+    call up camera.end() yo
+    call up rg.draw.yap_text(canvas, "RIZZGAME", [34, 24], 38, [237, 246, 255]) yo
+    call up rg.draw.yap_text(canvas, "NATIVE 2D / NO PYTHON / GPU RENDERING", [280, 40], 18, [92, 247, 224]) yo
+    call up rg.draw.yap_text(canvas, "WASD / ARROWS  MOVE     SPACE  BURST + SHAKE     ESC  EXIT", [35, 565], 16, [145, 164, 190]) yo
+    call up screen.glow_up([12, 15, 30]) yo
+    call up screen.blit(canvas, [0, 0]) yo
+    frame be frame + 1
+    vibecheck limit > 0 both frame >= limit:
+        vibecheck capture != "":
+            call up rg.image.save(canvas, capture) yo
+        running be cap
+    call up rg.display.show_off() yo
+call up rg.dip_out() yo

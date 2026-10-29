@@ -37,6 +37,27 @@ proc checkExpr(c: Ctx, e: Expr)
 
 proc checkStmts(c: Ctx, stmts: seq[Stmt])
 
+proc checkAssignTarget(c: Ctx, e: Expr, line, col: int) =
+  ## Keep invalid targets from leaking through as confusing Python syntax errors.
+  if e == nil:
+    return
+  case e.kind
+  of ekName:
+    let (found, isC) = c.lookup(e.s)
+    if not found:
+      c.issue(line, col,
+        "`" & e.s & "` never got declared, hit it with a `let` first")
+    elif isC:
+      c.issue(line, col, "`" & e.s & "` is locked, `lock` vars don't move")
+  of ekAttr, ekSub, ekSlice:
+    discard
+  of ekTuple, ekList:
+    for item in e.items:
+      c.checkAssignTarget(item, line, col)
+  else:
+    c.issue(line, col,
+      "that can't go on the left of `be`; assign to a name, attribute, or subscript")
+
 proc checkFunc(c: Ctx, s: Stmt, isMethod: bool) =
   let (found, isC) = c.lookup(s.fname)
   if isC:
@@ -49,24 +70,29 @@ proc checkFunc(c: Ctx, s: Stmt, isMethod: bool) =
   if s.fname == "new" and isMethod and (s.fparams.len == 0 or s.fparams[0].name != "fam"):
     c.issue(s.line, s.col, "the `new` glow-up needs `fam` as its first param")
 
+  # Defaults are evaluated in the enclosing scope, not inside the new cook.
+  for prm in s.fparams:
+    if prm.default != nil:
+      c.checkExpr(prm.default)
+
+  let savedFunc = c.funcDepth
+  let savedLoop = c.loopDepth
+  let savedAsync = c.asyncDepth
+  let savedSelf = c.selfDepth
+  c.funcDepth = 1
+  c.loopDepth = 0
+  c.asyncDepth = (if s.isAsync: 1 else: 0)
+  c.selfDepth = (if isMethod: 1 else: 0)
   c.scopes.add initTable[string, bool]()
   for prm in s.fparams:
     if prm.name != "":
       c.declare(prm.name, false)
-    if prm.default != nil:
-      c.checkExpr(prm.default)
-  inc c.funcDepth
-  if s.isAsync:
-    inc c.asyncDepth
-  if isMethod:
-    inc c.selfDepth
   c.checkStmts(s.fndefBody)
-  if isMethod:
-    dec c.selfDepth
-  if s.isAsync:
-    dec c.asyncDepth
-  dec c.funcDepth
   discard c.scopes.pop()
+  c.funcDepth = savedFunc
+  c.loopDepth = savedLoop
+  c.asyncDepth = savedAsync
+  c.selfDepth = savedSelf
 
 proc declarePattern(c: Ctx, e: Expr) =
   if e == nil:
@@ -90,6 +116,7 @@ proc checkExpr(c: Ctx, e: Expr) =
   of ekAwait:
     if c.asyncDepth == 0:
       c.issue(e.line, e.col, "`wait up` only works inside an `on timing cook`")
+    c.checkExpr(e.wexpr)
   of ekYield:
     if c.funcDepth == 0:
       c.issue(e.line, e.col, "`drop` only works inside a cook")
@@ -170,14 +197,7 @@ proc checkStmt(c: Ctx, s: Stmt) =
     if s.vvalue != nil:
       c.checkExpr(s.vvalue)
   of skAssign:
-    if s.target.kind == ekName:
-      let (found, isC) = c.lookup(s.target.s)
-      if not found:
-        c.issue(s.line, s.col,
-          "`" & s.target.s & "` never got declared, hit it with a `let` first")
-      elif isC:
-        c.issue(s.line, s.col,
-          "`" & s.target.s & "` is locked, `lock` vars don't move")
+    c.checkAssignTarget(s.target, s.line, s.col)
     c.checkExpr(s.target)
     c.checkExpr(s.value)
   of skExpr:
@@ -208,6 +228,14 @@ proc checkStmt(c: Ctx, s: Stmt) =
     c.declare(s.cname, false)
     for b in s.cbases:
       c.checkExpr(b)
+    let savedFunc = c.funcDepth
+    let savedLoop = c.loopDepth
+    let savedAsync = c.asyncDepth
+    let savedSelf = c.selfDepth
+    c.funcDepth = 0
+    c.loopDepth = 0
+    c.asyncDepth = 0
+    c.selfDepth = 0
     c.scopes.add initTable[string, bool]()
     for stmt in s.cbody:
       if stmt.kind == skFuncDef:
@@ -215,6 +243,10 @@ proc checkStmt(c: Ctx, s: Stmt) =
       else:
         c.checkStmt(stmt)
     discard c.scopes.pop()
+    c.funcDepth = savedFunc
+    c.loopDepth = savedLoop
+    c.asyncDepth = savedAsync
+    c.selfDepth = savedSelf
   of skReturn:
     if c.funcDepth == 0:
       c.issue(s.line, s.col, "`send it` only makes sense inside a cook")
@@ -276,6 +308,8 @@ proc checkStmt(c: Ctx, s: Stmt) =
     if s.amsg != nil:
       c.checkExpr(s.amsg)
   of skGlobal, skNonlocal:
+    if s.kind == skNonlocal and c.funcDepth == 0:
+      c.issue(s.line, s.col, "`localish` only works inside a nested cook")
     for n in s.gnames:
       c.declare(n, false)
   of skYield:

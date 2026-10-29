@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Manage Genzimnify projects and dependencies."><title>Packages and projects | Genzimnify Docs</title><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"></head>
+<body><div id="siteHeader"></div><div class="layout"><aside class="sidebar" id="siteSidebar"></aside><main class="content"><article>
+  <div class="page-kicker">Tools</div><h1>Packages and projects</h1><p class="lead">Every Genzimnify project can describe itself and its dependencies in <code>gzim.toml</code>. Packages may come from Git or a local directory.</p>
+  <h2 id="create">Create a project</h2><pre><code>mkdir my-vibe &amp;&amp; cd my-vibe
+gzim init</code></pre><p>This creates <code>main.gzim</code> and a manifest:</p><pre><code>[project]
+name = "my-vibe"
+version = "0.1.0"
+
+[dependencies]</code></pre>
+  <h2 id="add">Add a dependency</h2><pre><code>gzim add cool https://github.com/example/cool.git
+gzim add pinned https://github.com/example/pinned.git#v1.4.0
+gzim add local ../my-local-package</code></pre><p>The command records the source and installs it under the project-local <code>.gzim/packages/</code> cache. A <code>#tag</code>, <code>#branch</code>, or <code>#commit</code> selects the revision for the first install or an explicit update. Subsequent installs use the resolved commit in the lockfile.</p>
+  <h2 id="install">Restore dependencies</h2><pre><code>gzim install</code></pre><p>Reads <code>gzim.toml</code> and restores every dependency. Resolved Git commits are recorded in <code>gzim.lock</code> so another machine installs the same code. Commit both files; do not commit <code>.gzim/</code>.</p>
+  <h2 id="update">Update and strict installs · 2.0.6</h2><pre><code>gzim install --locked
+gzim update cool
+gzim update</code></pre><p><code>--locked</code> requires a lockfile matching every manifest dependency and does not rewrite it. Locked commits take precedence over branch and tag names. <code>update cool</code> refreshes only that package; <code>update</code> refreshes all packages using their configured source references. All downloads finish before any installed package is replaced. Fetch failures preserve installed packages and the lockfile. Local path dependencies are copied from their current contents; their lock entry records the path source, not a content snapshot.</p>
+  <h2 id="use">Use a package</h2><pre><code class="language-gzim">pull up cool
+yap(call up cool.greet("world") yo)</code></pre><p>A package can expose <code>cool.gzim</code>, <code>src/cool.gzim</code>, nested modules, or <code>main.gzim</code>.</p>
+  <h2 id="manage">List and remove</h2><pre><code>gzim packages
+gzim remove cool</code></pre>
+  <div class="callout"><div class="callout-title">Package sources</div><p>Genzimnify accepts Git repositories and local directories as package sources. Package updates are staged before replacing an installed dependency. A central package registry is not implemented.</p></div>
+  <div class="page-nav"><a href="cli.html"><small>Previous</small>← Command-line interface</a><a href="python-interop.html"><small>Next</small>Python interoperability →</a></div>
+</article></main><aside class="toc" id="pageToc"></aside></div><script src="app.js"></script></body></html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Write and run Genzimnify in your browser. Python semantics, Gen Z syntax.">
+  <meta name="theme-color" content="#0b0d12">
+  <title>Genzimnify Studio</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="titlebar">
+      <a class="brand" href="./" aria-label="Genzimnify Studio home">
+        <img class="brand-mark" src="favicon.svg" alt=""><span>GENZIMNIFY</span><span class="version">v2.0.6</span>
+      </a>
+      <nav class="menu" aria-label="Main menu">
+        <button class="menu-button" data-command="new">File</button>
+        <button class="menu-button" data-command="format">Edit</button>
+        <button class="menu-button" data-command="run">Run</button>
+        <a href="https://obliv1onis.github.io/Genzimnify/">Docs</a>
+      </nav>
+      <div class="title-actions">
+        <label class="run-timeout">Time limit <select id="runTimeout" aria-label="Program time limit"><option value="10000">10s</option><option value="30000">30s</option><option value="60000">60s</option><option value="0">None</option></select></label>
+        <button class="icon-button" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">☼</button>
+        <button class="secondary-button" id="shareBtn" title="Copy a shareable URL">Share</button>
+        <button class="run-button" id="runBtn" title="Run vibe (Ctrl/⌘ + Enter)">
+          <span class="play">▶</span><span>Run vibe</span><kbd>⌘↵</kbd>
+        </button>
+      </div>
+    </header>
+
+    <main class="ide">
+      <aside class="activitybar" aria-label="Activity bar">
+        <button class="activity active" data-view="explorer" title="Explorer">▱</button>
+        <button class="activity" data-view="learn" title="Language guide">◇</button>
+        <button class="activity" data-view="rizzgame" title="rizzgame">▣</button>
+        <button class="activity" id="searchBtn" title="Find in file">⌕</button>
+        <span class="activity-spacer"></span>
+        <a class="activity" href="https://github.com/Obliv1onis/Genzimnify" title="GitHub" aria-label="GitHub">⌘</a>
+      </aside>
+
+      <aside class="sidebar" id="sidebar">
+        <section class="side-view active" id="explorerView">
+          <div class="side-heading"><span>EXPLORER</span><button class="tiny-button" id="newBtn" title="New file">＋</button></div>
+          <div class="project-heading"><span class="chevron">⌄</span> GENZIMNIFY STUDIO</div>
+          <button class="file-row active" id="currentFile"><span class="file-icon">G</span><span id="fileName">main.gzim</span><span class="dirty" id="dirtyDot">●</span></button>
+          <div class="section-heading"><span>EXAMPLES</span></div>
+          <div id="exampleList" class="example-list"></div>
+          <div class="sidebar-actions">
+            <button id="importBtn">↑ Import .gzim</button><button id="downloadBtn">↓ Download</button>
+            <input type="file" id="fileInput" accept=".gzim,text/plain" hidden>
+          </div>
+        </section>
+        <section class="side-view" id="learnView">
+          <div class="side-heading"><span>QUICK REFERENCE</span></div>
+          <div class="reference" id="referenceList"></div>
+        </section>
+        <section class="side-view" id="rizzgameView">
+          <div class="side-heading"><span>RIZZGAME</span></div>
+          <div class="rizzgame-side"><p>Build a 2D game in the browser. Run it to see the canvas on the right; click the canvas to use the keyboard.</p><button id="loadRizzgameBtn">Open starter game</button><a href="https://obliv1onis.github.io/Genzimnify/rizzgame.html">Read the rizzgame tutorial ↗</a><small>The browser preview supports drawing, input, cameras, particles, and procedural sprite sheets. Native-only APIs are listed in the guide.</small></div>
+        </section>
+      </aside>
+
+      <section class="workbench">
+        <div class="editor-group">
+          <div class="tabs">
+            <div class="editor-tab active"><span class="file-icon">G</span><span id="tabName">main.gzim</span><span class="tab-dirty" id="tabDirty">●</span></div>
+            <button class="tab-action" id="formatBtn" title="Format document (Shift + Alt + F)">Format</button>
+          </div>
+          <div class="breadcrumbs"><span>genzimnify</span><b>›</b><span id="crumbName">main.gzim</span></div>
+          <div class="find-widget" id="findWidget" hidden>
+            <input id="findInput" type="search" placeholder="Find" autocomplete="off"><span id="findCount">0/0</span>
+            <button id="findPrev" title="Previous">↑</button><button id="findNext" title="Next">↓</button><button id="findClose" title="Close">×</button>
+          </div>
+          <div class="code-surface" id="codeSurface">
+            <div class="line-numbers" id="lineNumbers" aria-hidden="true"></div>
+            <div class="code-scroll" id="codeScroll">
+              <pre class="highlight" id="highlight" aria-hidden="true"></pre>
+              <textarea id="editor" aria-label="Genzimnify source editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="resize-handle" id="resizeHandle" title="Drag to resize panel"></div>
+        <section class="panel" id="panel">
+          <div class="panel-tabs" role="tablist">
+            <button class="panel-tab active" data-panel="console">CONSOLE</button>
+            <button class="panel-tab" data-panel="problems">PROBLEMS <span class="badge" id="problemCount">0</span></button>
+            <button class="panel-tab" data-panel="python">PYTHON</button>
+            <span class="panel-spacer"></span>
+            <button class="panel-icon" id="clearBtn" title="Clear console">⌫</button>
+            <button class="panel-icon" id="togglePanelBtn" title="Toggle panel">⌄</button>
+          </div>
+          <div class="panel-body">
+            <div class="terminal-pane">
+              <div class="panel-content active" id="consolePanel"><details class="stdin-panel"><summary>Program input · one line per yap back call</summary><textarea id="programInput" aria-label="Program standard input" placeholder="Enter input lines before running"></textarea></details><pre id="output" aria-live="polite"><span class="welcome">Genzimnify Studio v2.0.6
+Ready to vibe. Run with ⌘↵ or Ctrl+Enter.</span></pre></div>
+              <div class="panel-content" id="problemsPanel"><div id="diags"></div></div>
+              <div class="panel-content" id="pythonPanel"><pre id="pythonOutput"></pre></div>
+            </div>
+            <section class="preview-pane" aria-label="rizzgame preview">
+              <div class="preview-heading"><span>RIZZGAME PREVIEW</span><span id="previewState">Ready</span></div>
+              <div class="preview-stage" id="previewStage"><canvas id="gameCanvas" width="640" height="360" tabindex="0" aria-label="Game preview; focus to use keyboard controls"></canvas><p id="previewHint">Open the rizzgame example, then run it. Click the canvas for keyboard controls.</p></div>
+            </section>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="statusbar">
+      <div><span class="status-brand">G</span><span id="status">Ready</span></div>
+      <div class="status-right"><button id="diagStatus">✓ No cap</button><button id="cursorStatus">Ln 1, Col 1</button><span>Spaces: 4</span><span>UTF-8</span><span>Genzimnify</span></div>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="command-backdrop" id="commandBackdrop" hidden>
+    <div class="command-palette" role="dialog" aria-label="Command palette">
+      <input id="commandInput" placeholder="Type a command…" autocomplete="off"><div id="commandList"></div>
+    </div>
+  </div>
+  <script src="transpiler.js"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+  <script src="rizzgame-preview.js"></script>
+  <script src="runner.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

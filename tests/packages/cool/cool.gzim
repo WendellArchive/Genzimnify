@@ -1,0 +1,4 @@
+cook greet(name):
+    send it glow"package says hey {name}"
+
+lock package_version be "1.0.0"

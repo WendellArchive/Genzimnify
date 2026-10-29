@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Genzimnify documentation — a native, Python-free programming language with Gen Z syntax."><title>Genzimnify Documentation</title><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"></head>
+<body><div id="siteHeader"></div><div class="layout"><aside class="sidebar" id="siteSidebar"></aside><main class="content"><article class="hero">
+  <div class="page-kicker">Documentation · Version 2.0.6</div>
+  <h1>Genzimnify documentation</h1>
+  <p class="lead">Genzimnify is a native, dynamically typed programming language with Python-like semantics and its own syntax. Source files use the <code>.gzim</code> extension and execute through the <code>gzim</code> runtime.</p>
+  <div class="hero-actions"><a class="button primary" href="installation.html">Install Genzimnify →</a><a class="button" href="getting-started.html">Get started</a><a class="button" href="language-guide.html">Language reference</a></div>
+  <pre><code class="language-gzim">cook greet(name):
+    send it glow"Hello, {name}"
+
+yap(call up greet("world") yo)</code></pre>
+  <div class="feature-strip"><div class="feature"><b>Native runtime</b><span>Executes the AST directly in a compiled Nim binary.</span></div><div class="feature"><b>Project ecosystem</b><span>Manifests, Git packages, native modules, and optional Python interop.</span></div><div class="feature"><b>Development tools</b><span>CLI, REPL, diagnostics, LSP, and editor support.</span></div></div>
+  <h2 id="start-here">Documentation sections</h2>
+  <div class="cards">
+    <a class="card" href="installation.html"><div class="card-icon">01</div><h3>Installation</h3><p>Homebrew, shell installer, PowerShell, and manual download instructions.</p></a>
+    <a class="card" href="getting-started.html"><div class="card-icon">02</div><h3>First program</h3><p>Project creation, program execution, command-line arguments, and diagnostics.</p></a>
+    <a class="card" href="language-guide.html"><div class="card-icon">GZ</div><h3>Language guide</h3><p>Values, control flow, cooks, cliques, exceptions, modules, and async syntax.</p></a>
+    <a class="card" href="tooling.html"><div class="card-icon">⌁</div><h3>Editor integration</h3><p>Language server configuration and supported editor features.</p></a>
+    <a class="card" href="packages.html"><div class="card-icon">PK</div><h3>Package management</h3><p>Git and local dependencies declared in <code>gzim.toml</code>.</p></a>
+    <a class="card" href="python-interop.html"><div class="card-icon">PY</div><h3>Python interoperability</h3><p>Python module imports through the optional <code>py.</code> bridge.</p></a>
+    <a class="card" href="changelog.html"><div class="card-icon">CL</div><h3>Changelog</h3><p>Release history, compatibility changes, fixes, and platform support updates.</p></a>
+  </div>
+  <h2 id="why-native">What “native” means</h2>
+  <p>The <code>gzim</code> executable contains the lexer, parser, semantic analyzer, and runtime. Running <code>gzim app.gzim</code> does not generate a Python file or launch Python. Python starts when code imports a <code>py.*</code> module or an exported Python file is executed.</p>
+  <div class="callout"><div class="callout-title">Runtime components</div><p><code>gzim doctor</code> reports the installed runtime version and platform. Release packages include compiled executables and do not require Nim.</p></div>
+  <div class="page-nav"><span></span><a href="installation.html"><small>Next</small>Install Genzimnify →</a></div>
+</article></main><aside class="toc" id="pageToc"></aside></div><script src="app.js"></script></body></html>

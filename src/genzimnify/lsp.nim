@@ -3,7 +3,7 @@
 ## completion and document symbols. Errors are cap; we report them politely.
 
 import std/[json, strutils, tables, options, strformat, sequtils]
-import lexer, token, parser, semantic, ast, errors
+import lexer, token, parser, semantic, ast, errors, version
 
 type
   Doc = object
@@ -69,8 +69,8 @@ proc lspRange(startP, endP: Pos): JsonNode =
 
 proc analyze(text: string): Doc =
   result = Doc(text: text)
-  result.toks = lexer.lex(text)
   try:
+    result.toks = lexer.lex(text)
     let (program, _) = parseProgram(result.toks)
     result.program = program
   except GzimError:
@@ -153,7 +153,7 @@ const KEYWORD_DOCS: Table[string, string] = {
   "on god": "`assert`, on god this is true.",
   "fit check": "`match`, fit check the value.",
   "fit": "`case`, one fit per pattern.",
-  "yap": "`print`, yap about it.",
+  "yap": "`yap(*values, glue=\" \", micdrop=\"\\n\")`: join text and drop the mic.",
   "yap back": "`input`, yap back at the user.",
   "fr": "Statement terminator (optional, for emphasis).",
   "sus": "`if` filter in comprehensions.",
@@ -171,22 +171,22 @@ const KEYWORD_DOCS: Table[string, string] = {
   "how many": "`len`, how many are in it.",
   "add up": "`sum`, add it all up.",
   "least": "`min`.", "most": "`max`.", "positive": "`abs`.",
-  "ranked": "`sorted`, put them on rank.",
+  "ranked": "`ranked(values, uno_reverse=cap)`: put them on rank.",
   "index up": "`enumerate`.", "link": "`zip`, link up two squads.",
   "unlock": "`open`, unlock the file.",
   "round up": "`round`.",
   "vibe check": "`type`, vibe check the type.",
-  "luck": "`random` module.", "clock": "`time` module.",
-  "system": "`os`/`sys` modules.", "timing": "`asyncio` module.",
-  "stash": "`collections`.", "loops": "`itertools`.", "tools": "`functools`.",
-  "json": "`json`.", "regex": "`re`.", "paths": "`pathlib`.",
-  "spawn": "`subprocess`.", "net": "`socket`.", "web": "`http`.",
-  "db": "`sqlite3`.", "vibecheck": "`unittest` (module).",
-  "L": "`Exception`.", "BadVibe": "`ValueError`.",
-  "WrongType": "`TypeError`.", "OutOfPocket": "`IndexError`.",
-  "Ghosted": "`KeyError`.", "SplitByZero": "`ZeroDivisionError`.",
-  "NoPullUp": "`ImportError`.", "CapDetected": "`AssertionError`.",
-  "StopTheCap": "`StopIteration`.",
+  "luck": "Native random utilities; luck.manifest(integer) repeats the random sequence.", "clock": "Native clock utilities.",
+  "system": "Native process and environment utilities.",
+  "timing": "Native cooperative timing module.", "math": "Native math module.",
+  "json": "Native JSON parser and encoder.", "path": "Native filesystem path utilities.",
+  "encoding": "Native Base64 encoding utilities.",
+  "rizzgame": "Native 2D game library (raylib 5.5 backend).",
+  "L": "Base native exception.", "BadVibe": "Invalid value exception.",
+  "WrongType": "Type exception.", "OutOfPocket": "Index exception.",
+  "Ghosted": "Missing key/name exception.", "SplitByZero": "Division-by-zero exception.",
+  "NoPullUp": "Module/file exception.", "CapDetected": "Assertion exception.",
+  "StopTheCap": "Iteration stop exception.",
 }.toTable
 
 type
@@ -391,9 +391,10 @@ proc completionList(decls: seq[Decl]): JsonNode =
                        "vibe check", "num", "drip", "text", "truth", "stack",
                        "map", "squad", "crew", "yap", "yap back"]
     item(k, if isCall: 3 else: 14, v)  # Function / Keyword
-  for modname in ["luck", "clock", "system", "json", "regex", "stash", "loops",
-                  "tools", "timing", "types", "paths", "spawn", "net", "web", "db"]:
-    item(modname, 9, "slang module")
+  for modname in ["math", "luck", "clock", "system", "timing", "json", "path", "encoding", "rizzgame"]:
+    item(modname, 9, "native Genzimnify module")
+  for modname in ["py.math", "py.json", "py.numpy"]:
+    item(modname, 9, "optional Python library bridge")
   for d in decls:
     if d.kind != dkParam:
       item(d.name, (case d.kind
@@ -455,7 +456,7 @@ proc main*() =
           "completionProvider": {"resolveProvider": false, "triggerCharacters": []},
           "documentSymbolProvider": true,
         },
-        "serverInfo": {"name": "gzim-lsp", "version": "1.0.0"},
+        "serverInfo": {"name": "gzim-lsp", "version": GenzimnifyVersion},
       })
     elif m == "initialized":
       discard
@@ -483,7 +484,9 @@ proc main*() =
     elif m == "textDocument/didSave":
       discard
     elif m == "textDocument/didClose":
-      docs.del(msg{"params"}{"textDocument"}{"uri"}.getStr())
+      let uri = msg{"params"}{"textDocument"}{"uri"}.getStr()
+      docs.del(uri)
+      notify("textDocument/publishDiagnostics", %*{"uri": uri, "diagnostics": []})
     elif m == "textDocument/hover":
       let uri = msg{"params"}{"textDocument"}{"uri"}.getStr()
       if uri in docs:

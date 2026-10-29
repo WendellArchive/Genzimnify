@@ -1,0 +1,11 @@
+pull up json
+pull up path
+pull up encoding
+
+let payload be call up json.parse("{\"answer\":42,\"ready\":true}") yo
+yap(payload["answer"])
+yap(call up json.stringify({"letters": ["a", "b"]}) yo)
+yap(call up path.basename("some/folder/demo.gzim") yo)
+let coded be call up encoding.base64_encode("no cap") yo
+yap(coded)
+yap(call up encoding.base64_decode(coded) yo)

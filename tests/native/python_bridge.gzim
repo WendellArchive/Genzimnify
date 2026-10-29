@@ -1,0 +1,7 @@
+pull up py.math as pymath
+outta py.json pull up dumps
+pull up py.builtins as builtins
+
+yap(call up pymath.sqrt(81) yo)
+yap(call up dumps({"b": 2, "a": 1}, sort_keys be nocap) yo)
+call up builtins.print("bridge-ok") yo

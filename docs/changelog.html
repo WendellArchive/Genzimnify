@@ -1,0 +1,170 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Genzimnify release history and version notes."><title>Changelog | Genzimnify Docs</title><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"></head>
+<body><div id="siteHeader"></div><div class="layout"><aside class="sidebar" id="siteSidebar"></aside><main class="content"><article class="changelog">
+  <div class="page-kicker">Project</div><h1>Changelog</h1><p class="lead">Notable user-facing changes to Genzimnify are documented here. Entries are organized by release and follow the Added, Changed, Fixed, and Removed categories where applicable.</p>
+  <div class="callout"><div class="callout-title">Historical releases</div><p>Versions 1.0 and 1.1 predate the current release series. The original 1.0 source remains available in the <a href="https://github.com/WendellArchive/Genzimnify">archived repository</a>.</p></div>
+
+  <h2 id="v2-0-6">2.0.6 — 2026-10-09</h2>
+  <h3>Added</h3><ul>
+    <li>Runtime call stacks with function names and source locations, including imported functions.</li>
+    <li><code>clock.monotonic()</code>, <code>luck.shuffle()</code>, <code>luck.sample()</code>, and <code>math.isfinite/isnan/isinf</code>.</li>
+    <li><code>gzim update [name]</code> and <code>gzim install --locked</code>.</li>
+    <li><code>gzim-lsp --help</code> and <code>gzim-lsp --version</code> for checking editor installations.</li>
+    <li>Studio background execution for ordinary programs, Stop, configurable time limits, prefilled standard input, and a 100,000-character console limit.</li>
+  </ul>
+  <h3>Fixed</h3><ul>
+    <li>Integer powers preserve precision. Integer arithmetic overflow and unsafe float-to-int conversion raise catchable errors.</li>
+    <li>Native sleep now waits; invalid durations raise errors. Native timing remains synchronous.</li>
+    <li>LSP no longer exits on incomplete strings and clears diagnostics on document close.</li>
+    <li>Python export helpers avoid collisions with user names.</li>
+    <li>Lockfile commits override branch/tag references during restoration. Dependencies are resolved as a batch before installed copies are replaced.</li>
+    <li>Imported functions resolve relative imports from their own source file. Failed module initialization restores import context and removes the incomplete cache entry.</li>
+    <li>File readline normalizes CRLF/CR line endings and retains newlines and returns empty text at EOF. Studio detects from-imports of rizzgame and yields in top-level for loops.</li>
+  </ul>
+
+  <p><a href="https://github.com/Obliv1onis/Genzimnify/releases/tag/v2.0.6">View the 2.0.6 release and downloads →</a></p>
+
+  <h2 id="v2-0-5">2.0.5 — 2026-10-08</h2>
+  <h3>Added</h3><ul>
+    <li>Slang options for output: <code>yap(..., glue=" ", micdrop="\n")</code>.</li>
+    <li>Descending sorting with <code>ranked(values, uno_reverse=nocap)</code>, and repeatable random sequences with <code>luck.manifest(integer)</code>.</li>
+    <li>Matching Python export and Studio support, plus native/Python parity regression tests.</li>
+  </ul>
+  <h3>Fixed</h3><ul>
+    <li>Integer comparisons, including mixed integer/float comparisons, no longer round distinct int64 values together. Integer floor division and modulo preserve precision and signed remainder semantics; overflowing minimum-int64 division raises a catchable error.</li>
+    <li>Set equality is independent of insertion order.</li>
+    <li><code>no_matter_what</code> runs when exceptions escape a body or handler. Nested handlers restore the active exception, and cleanup control flow can override a pending return or exception.</li>
+    <li>Unsupported and duplicate keyword arguments raise errors instead of being silently ignored. Ancestor calls forward keyword arguments.</li>
+  </ul>
+  <h3>Changed</h3><ul><li>Unparenthesized comparison chains now report a diagnostic suggesting explicit <code>both</code> expressions. Parenthesized comparisons remain supported.</li></ul>
+
+  <p><a href="https://github.com/Obliv1onis/Genzimnify/releases/tag/v2.0.5">View the 2.0.5 release and downloads →</a></p>
+
+  <h2 id="v2-0-4">2.0.4 — 2026-09-29</h2>
+  <h3>Added</h3><ul>
+    <li>Conversion preflight with <code>--check</code>, optional Python source maps with <code>--source-map</code>, and Python conversion errors with source excerpts and rewrite hints.</li>
+    <li><code>gzim eval</code> for inline programs and recursive <code>gzim check &lt;directory&gt;</code> for project validation.</li>
+    <li><code>gzim --version</code> checks for newer stable releases and shows update instructions without installing anything. <code>--offline</code> and <code>GZIM_NO_UPDATE_CHECK=1</code> disable checks.</li>
+    <li><code>gzim doctor</code> identifies the running executable and optional Python location.</li>
+    <li><code>rizzgame</code>, a Python-free native 2D game library powered by a bundled raylib 5.5 backend. It includes pygame-style display, surfaces, events, input, drawing, images, fonts, sound and streamed music, frame timing, and rectangles.</li>
+    <li>2D cameras with follow and shake, particle emitters, sprite-sheet animation, vector helpers, and easing functions.</li>
+    <li>Examples, graphics integration tests, a pinned backend build, and installer support for the native library.</li>
+    <li>Gen Z aliases for the native <code>rizzgame</code> API, including <code>pull_up</code>, <code>show_off</code>, <code>catch_vibes</code>, <code>glow_up</code>, and <code>flex_rect</code>; pygame-style names remain compatible.</li>
+    <li>Studio now runs supported <code>rizzgame</code> programs in a live Canvas preview beside its console, with a dedicated workspace, starter game, keyboard and mouse input, and a <a href="rizzgame-studio.html">browser tutorial</a>.</li>
+  </ul>
+  <p>See the <a href="rizzgame.html">rizzgame guide</a> for the native API, a working example, and current scope.</p>
+  <h3>Changed</h3><ul><li>Removed duplicate <code>build</code> and <code>emit-python</code> CLI operations. Use <code>convert &lt;file&gt; --to py --source-map</code> instead; old commands show migration guidance.</li><li>Centralized CLI dispatch and uncaught-error handling, and moved Python export compilation into the conversion module.</li></ul>
+  <h3>Fixed</h3><ul><li>The test runner now fails when any sub-suite fails and checks runtime exit status as well as output.</li><li>Release version verification runs offline; CLI regression tests now cover conversion checks, source-map protection, inline execution, directory checks, and release notices.</li></ul>
+  <p><a href="https://github.com/Obliv1onis/Genzimnify/releases/tag/v2.0.4">View the 2.0.4 release and downloads →</a></p>
+
+  <h2 id="v2-0-3">2.0.3 — 2026-09-27</h2>
+  <h3>Added</h3>
+  <ul>
+    <li><code>gzim convert &lt;file&gt; --to &lt;py|gzim&gt;</code> with sibling output, custom <code>-o</code> paths, explicit <code>--force</code> replacement, and source-file protection.</li>
+    <li>A limited Python-to-Genzimnify preview using Python's AST parser, lexical builtin mapping, escaped conflicting names, and source-located errors for unsupported syntax. Conversion parses input without executing it and validates generated Genzimnify before writing.</li>
+    <li>Conversion integration tests covering native and Python execution, overwrite protection, failure recovery, and CLI validation; Windows CI also runs the conversion suite.</li>
+  </ul>
+  <h3>Changed</h3>
+  <ul><li>The new conversion command reuses Python export and stages output before replacement. Existing <code>emit-python</code> and <code>build</code> commands retain their behavior.</li></ul>
+  <h3>Preview limitations</h3>
+  <ul>
+    <li>Python-to-Genzimnify conversion requires Python 3.8+ and supports a limited syntax subset. Imports, classes, decorators, async, comprehensions, and chained comparisons are not yet supported.</li>
+    <li>Conversion normalizes formatting and does not preserve comments. Generated programs follow native Genzimnify semantics; conversion is not a lossless round trip.</li>
+  </ul>
+  <p>See <a href="cli.html#convert">conversion commands</a> and <a href="python-interop.html#source-conversion">supported syntax and builtin forms</a> for details.</p>
+  <p><a href="https://github.com/Obliv1onis/Genzimnify/releases/tag/v2.0.3">View the 2.0.3 release and downloads →</a></p>
+
+  <h2 id="v2-0-2">2.0.2 — 2026-09-27</h2>
+  <h3>Changed</h3>
+  <ul>
+    <li>The REPL now preserves session state while executing only newly submitted code, preventing earlier output and side effects from being replayed.</li>
+    <li>Package updates are staged before installation and replace an existing dependency only after the new copy has been resolved successfully.</li>
+    <li>CLI commands now reject unexpected trailing arguments instead of silently ignoring them.</li>
+    <li>The runtime, language server, and Python emitter now use a shared native version constant.</li>
+  </ul>
+  <h3>Fixed</h3>
+  <ul>
+    <li>Failed dependency additions now restore the previous project manifest, lockfile, and installed package.</li>
+    <li>The Nimble package manifest now uses a valid dependency declaration and correctly maps the <code>gzimlsp</code> source module to the <code>gzim-lsp</code> executable.</li>
+    <li>The Windows installer now uses a unique temporary archive path to avoid conflicts between concurrent installations.</li>
+  </ul>
+  <h3>Removed</h3>
+  <ul>
+    <li>Prebuilt Intel Mac (<code>macOS x86_64</code>) artifacts are no longer published. Version 2.0.1 is the final Intel Mac release; macOS support now targets Apple Silicon.</li>
+  </ul>
+  <h3>Quality assurance</h3>
+  <ul>
+    <li>Language-server integration tests now run in continuous integration.</li>
+    <li>Windows CI now compiles and starts <code>gzim-lsp</code>.</li>
+    <li>Release builds verify that the binary version matches the Git tag before artifacts are published.</li>
+  </ul>
+  <p><a href="https://github.com/Obliv1onis/Genzimnify/releases/tag/v2.0.2">View the 2.0.2 release and downloads →</a></p>
+
+  <h2 id="v2-0-1">2.0.1 — 2026-09-27</h2>
+  <h3>Added</h3>
+  <ul>
+    <li>Introduced explicit Python interoperability through the <code>py.*</code> namespace, including positional and keyword arguments and JSON-compatible value conversion.</li>
+    <li>Added project manifests, reproducible lockfiles, Git dependencies, local-path dependencies, and the <code>add</code>, <code>install</code>, <code>remove</code>, and <code>packages</code> commands.</li>
+    <li>Added package-aware module resolution under <code>.gzim/packages</code>.</li>
+    <li>Introduced the Genzimnify language mark and expanded Python-to-Genzimnify syntax comparisons.</li>
+  </ul>
+  <h3>Changed</h3>
+  <ul>
+    <li>Reorganized the documentation and README around installation, language usage, tooling, packages, and interoperability.</li>
+    <li>Replaced the documentation search modal with an inline search-results interface.</li>
+  </ul>
+  <h3>Fixed</h3>
+  <ul>
+    <li>Corrected release version metadata and refined release documentation.</li>
+  </ul>
+  <p><a href="https://github.com/Obliv1onis/Genzimnify/releases/tag/v2.0.1">View the 2.0.1 release →</a></p>
+
+  <h2 id="v2-0-0">2.0.0 — 2026-09-26</h2>
+  <h3>Added</h3>
+  <ul>
+    <li>Introduced the standalone <code>gzim</code> runtime, implemented in Nim and distributed as a native executable.</li>
+    <li>Added native values, collections, functions, generators, classes, exceptions, local modules, file operations, and standard-library modules.</li>
+    <li>Added <code>gzim doctor</code> for runtime and platform diagnostics.</li>
+    <li>Added optional Python export through <code>gzim emit-python</code>.</li>
+    <li>Added automated release archives, checksum generation, shell and PowerShell installers, and a Homebrew formula.</li>
+  </ul>
+  <h3>Changed</h3>
+  <ul>
+    <li>Normal program execution moved from Python source generation to direct evaluation by the native runtime.</li>
+    <li><code>gzim</code> replaced <code>genzimc</code> as the primary user-facing command; the compiler remained available for compatibility and export workflows.</li>
+    <li>Python was no longer required for ordinary Genzimnify programs.</li>
+  </ul>
+  <p><a href="https://github.com/Obliv1onis/Genzimnify/releases/tag/v2.0.0">View the 2.0.0 release →</a></p>
+
+  <h2 id="v1-1-0">1.1.0 — 2026-09-25</h2>
+  <h3>Added</h3>
+  <ul>
+    <li>Replaced the original browser playground with Genzimnify Studio, including examples, live diagnostics, syntax highlighting, code completion, formatting, import and export, share links, autosave, themes, and a resizable console.</li>
+    <li>Introduced the first full documentation portal and reorganized generated API documentation.</li>
+    <li>Added regression coverage for invalid assignments, malformed control-flow blocks, parameter validation, argument ordering, multiline strings, and nested scopes.</li>
+  </ul>
+  <h3>Fixed</h3>
+  <ul>
+    <li>Improved multiline string emission and nested-function scope validation.</li>
+    <li>Improved compile-time diagnostics for invalid assignment targets, malformed <code>try</code> and <code>match</code> blocks, invalid parameter lists, and duplicate or misordered call arguments.</li>
+    <li>Made language-server tests portable across development environments.</li>
+  </ul>
+  <p><a href="https://github.com/Obliv1onis/Genzimnify/commit/28be0456302f70ec41697f808dc695c4a4c6f80e">View the 1.1 release commit →</a></p>
+
+  <h2 id="v1-0-0">1.0.0 — 2026-09-22</h2>
+  <h3>Added</h3>
+  <ul>
+    <li>Published the initial Genzimnify language implementation in Nim, including the lexer, parser, abstract syntax tree, semantic analyzer, Python emitter, source maps, and command-line interface.</li>
+    <li>Introduced the core language: bindings and constants, control flow, functions and generators, collections and comprehensions, classes and inheritance, exceptions, pattern matching, context managers, asynchronous syntax, type annotations, modules, and glow strings.</li>
+    <li>Added <code>run</code>, <code>build</code>, <code>check</code>, <code>repl</code>, and <code>init</code> workflows through <code>genzimc</code>.</li>
+    <li>Added a Tree-sitter grammar, syntax-highlighting queries, <code>gzim-lsp</code>, and a Zed development extension.</li>
+    <li>Added the original static browser playground, powered by the JavaScript transpiler and Pyodide.</li>
+    <li>Added language, compiler, and language-server test suites together with prebuilt development binaries.</li>
+  </ul>
+  <h3>Runtime model</h3>
+  <ul>
+    <li>Version 1.0 transpiled <code>.gzim</code> source to Python and required Python 3.10 or newer to execute programs.</li>
+  </ul>
+  <p><a href="https://github.com/WendellArchive/Genzimnify">View the archived 1.0 source →</a></p>
+
+  <div class="page-nav"><a href="tooling.html"><small>Previous</small>← Editor and LSP</a><a href="index.html"><small>Back to start</small>Documentation home →</a></div>
+</article></main><aside class="toc" id="pageToc"></aside></div><script src="app.js"></script></body></html>

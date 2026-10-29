@@ -1,0 +1,5 @@
+# v1.1: multiline strings must emit valid Python string literals
+let message be """first
+second"""
+yap(message)
+yap("tab:\tend")

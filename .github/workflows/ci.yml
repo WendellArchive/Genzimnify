@@ -1,0 +1,85 @@
+name: Native runtime CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022, macos-15]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Nim
+        uses: jiro4989/setup-nim-action@v2
+        with:
+          nim-version: "2.2.x"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Linux graphics build dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libasound2-dev libx11-dev libxrandr-dev libxi-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev xvfb xauth
+      - name: Build native graphics backend
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cmake -S native/rizzgame -B build/rizzgame -G "Visual Studio 17 2022" -A x64 -DRIZZGAME_OUTPUT_DIR="$PWD/build"
+          else
+            cmake -S native/rizzgame -B build/rizzgame -DCMAKE_BUILD_TYPE=Release -DRIZZGAME_OUTPUT_DIR="$PWD/build"
+          fi
+          cmake --build build/rizzgame --config Release --parallel 4
+      - name: Build native CLI
+        shell: bash
+        run: mkdir -p build && nim c -d:release --out:build/gzim src/gzim.nim
+      - name: Run conversion suite (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          python tests/runtime_correctness_test.py build/gzim.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tests/conversion_test.py build/gzim.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tests/cli_test.py build/gzim.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tests/package_manager_test.py build/gzim.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tests/rizzgame_test.py build/gzim.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Run language suite
+        if: runner.os != 'Windows'
+        shell: bash
+        run: tests/run_tests.sh
+      - name: Check browser Studio and Pages copy
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          python3 scripts/sync-studio-pages.py --check
+          python3 tests/studio_rizzgame_test.py
+          node tests/studio_preview_test.js
+          node tests/studio_runner_test.js
+          node tests/studio_worker_test.js
+          node --check studio/app.js
+          node --check studio/rizzgame-preview.js
+          node --check studio/runtime-worker.js
+          node --check docs/app.js
+      - name: Run graphics suite (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: GZIM_RIZZGAME_GRAPHICS_TEST=1 xvfb-run -a python3 tests/rizzgame_test.py build/gzim
+      - name: Run language server suite
+        if: runner.os != 'Windows'
+        shell: bash
+        run: tests/lsp_test.sh
+      - name: Native smoke test (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $actual = & build/gzim.exe tests/cases/fizzbuzz.gzim
+          $expected = (Get-Content tests/cases/fizzbuzz.expected) -join "`n"
+          if (($actual -join "`n") -ne $expected) { throw "Native output mismatch" }
+          & build/gzim.exe doctor
+          nim c -d:release --out:build/gzim-lsp.exe src/gzimlsp.nim
+          "" | & build/gzim-lsp.exe

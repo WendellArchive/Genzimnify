@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Build and preview a rizzgame game in Genzimnify Studio."><title>rizzgame in Studio | Genzimnify Docs</title><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"></head>
+<body><div id="siteHeader"></div><div class="layout"><aside class="sidebar" id="siteSidebar"></aside><main class="content"><article>
+  <div class="page-kicker">rizzgame tutorial</div><h1>Build a game in Studio</h1><p class="lead">Write Genzimnify on the web, run it, and watch the game canvas beside the console. The editor, diagnostics, and generated Python view work as before; the game preview stays visible on the right.</p>
+  <h2 id="open">1. Open the starter</h2><p>Open <a href="https://obliv1onis.github.io/Genzimnify/studio/">Genzimnify Studio</a> and select the ▣ rizzgame activity. Choose <strong>Open starter game</strong>, then press <strong>Run vibe</strong> or Ctrl/⌘ + Enter. Choose <strong>None</strong> under Time limit for games that run longer than the default ten seconds. The first run downloads Pyodide, the browser’s Python/WASM runtime. Native <code>gzim</code> uses Nim and raylib instead and does not need Python.</p><p>The lower panel is split: console, problems, and generated Python on the left; a live canvas on the right. Click the canvas before using WASD or arrow keys. Press Escape in the canvas or <strong>Stop</strong> to finish.</p>
+  <h2 id="code">2. Read the game loop</h2><pre><code class="language-gzim">pull up rizzgame as rg
+let screen be call up rg.display.pull_up([640, 360]) yo
+let clock be call up rg.time.Clock() yo
+let player be call up rg.Rect(300, 160, 36, 36) yo
+let running be nocap
+vibe running:
+    let dt be call up clock.keep_up(60) yo / 1000
+    for real event up in call up rg.event.catch_vibes() yo:
+        vibecheck event.type == rg.KEYDOWN both event.key == rg.K_ESCAPE:
+            running be cap
+    let keys be call up rg.key.check_the_vibe() yo
+    vibecheck keys[rg.K_LEFT] either keys[rg.K_a]: player.x be player.x - 220 * dt
+    vibecheck keys[rg.K_RIGHT] either keys[rg.K_d]: player.x be player.x + 220 * dt
+    call up screen.glow_up([14, 19, 32]) yo
+    call up rg.draw.flex_rect(screen, [103, 245, 201], player) yo
+    call up rg.display.show_off() yo
+call up rg.dip_out() yo</code></pre><p><code>keep_up(60)</code> returns elapsed milliseconds. Divide by 1000 to move by pixels per second, so motion stays consistent when the frame rate varies. <code>catch_vibes()</code> handles discrete key and mouse events, while <code>check_the_vibe()</code> reports held keys. Clear the surface each frame with <code>glow_up()</code>, draw shapes, then call <code>show_off()</code> to present and yield to browser input.</p>
+  <h2 id="draw">3. Add a scene</h2><p>Add these calls between <code>screen.glow_up(...)</code> and <code>display.show_off()</code>. Shape color is an RGB or RGBA list; positions use pixels from the top left.</p><pre><code class="language-gzim">call up rg.draw.flex_circle(screen, [92, 247, 224], [320, 180], 70) yo
+call up rg.draw.flex_line(screen, [255, 210, 95], [0, 0], player.center, 3) yo
+call up rg.draw.yap_text(screen, "MOVE THE SQUARE", [18, 18], 20, [235, 242, 255]) yo</code></pre><p>Use <code>rg.Surface([width, height])</code> for an offscreen layer, call <code>layer.glow_up(color)</code> or draw onto it, then place it with <code>screen.blit(layer, [x, y])</code>. A <code>Rect</code> has <code>x</code>, <code>y</code>, <code>center</code>, <code>collidepoint()</code>, and <code>colliderect()</code> for simple collision checks.</p>
+  <h2 id="input">4. Try mouse input</h2><pre><code class="language-gzim">for real event up in call up rg.event.catch_vibes() yo:
+    vibecheck event.type == rg.MOUSEBUTTONDOWN:
+        player.center be event.pos</code></pre><p>Put this event handler near the start of the loop. The preview canvas must have focus for keyboard input. Mouse positions are scaled into game coordinates even when the preview is resized.</p>
+  <h2 id="scope">Browser support and native projects</h2><p>Studio’s Canvas adapter supports the Gen Z and pygame-style aliases for display creation, frame presentation, surfaces, rectangle geometry, fills, blits, shapes, text, keyboard and mouse events, frame timing, math helpers, cameras, particles, and sprite sheets made from offscreen surfaces. The repository’s procedural Neon Arena example also runs in the preview. <code>show_off()</code> or <code>flip()</code> must be in the top-level game loop so the browser can render and handle input between frames. Browser preview does not yet support file-backed raylib images, custom fonts, sound/music, or saving images. Those APIs work in the <a href="rizzgame.html">native rizzgame runtime</a>; download the same <code>.gzim</code> file and run it with <code>gzim run game.gzim</code> when you need them.</p><p>Studio loads Pyodide from a CDN on first run and keeps code in your browser. The preview is a browser implementation of the supported API, so rendering details may differ from the native GPU backend.</p>
+  <div class="page-nav"><a href="rizzgame.html"><small>Previous</small>← rizzgame native API</a><a href="tooling.html"><small>Next</small>Editor and LSP →</a></div>
+</article></main><aside class="toc" id="pageToc"></aside></div><script src="app.js"></script></body></html>

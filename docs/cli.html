@@ -1,0 +1,36 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Genzimnify command-line interface reference."><title>CLI reference | Genzimnify Docs</title><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"></head>
+<body><div id="siteHeader"></div><div class="layout"><aside class="sidebar" id="siteSidebar"></aside><main class="content"><article>
+  <div class="page-kicker">Tools</div><h1>Command-line interface</h1><p class="lead"><code>gzim</code> is the native runtime, checker, REPL, project bootstrapper, and compatibility exporter.</p>
+  <h2 id="run">Run a program</h2><pre><code>gzim app.gzim [arguments...]
+gzim run app.gzim [arguments...]</code></pre><p>Both forms parse, semantically check, and execute the program in the current native process. Arguments are exposed through the global <code>args</code> stack. Unhandled runtime errors show a call stack with function names and source file locations, followed by the error category and message.</p>
+  <h2 id="check">Check a program</h2><pre><code>gzim check app.gzim
+gzim check .</code></pre><p>Runs the lexer, parser, and semantic analyzer without executing the program. A successful check exits with status 0. Caps exit nonzero and include file, line, and column information.</p>
+  <p>Directory checks recursively visit .gzim files in sorted order, report all failures, and skip directory symlinks, .git, .gzim, build, dist, target, node_modules, .venv, and venv. An empty directory exits with status 1.</p>
+  <h2 id="eval">Run inline code</h2><pre><code>gzim eval 'yap(1 + 2)'
+gzim eval 'yap(args[0])' hello</code></pre><p>Runs a native program directly from the command line. Following arguments are available through args.</p>
+  <h2 id="repl">Start the REPL</h2><pre><code>gzim repl</code></pre><p>Enter code at <code>vibe&gt;</code>. A blank line executes the accumulated session. Ctrl+D exits.</p>
+  <h2 id="init">Initialize a project</h2><pre><code>mkdir my-vibe &amp;&amp; cd my-vibe
+gzim init</code></pre><p>Creates a starter <code>main.gzim</code> and <code>gzim.toml</code> without replacing existing files.</p>
+  <h2 id="packages">Manage packages</h2><pre><code>gzim add cool https://github.com/example/cool.git#v1.0.0
+gzim install
+gzim install --locked
+gzim update cool
+gzim update
+gzim packages
+gzim remove cool</code></pre><p>Dependencies are project-local and may come from Git or a local directory. See <a href="packages.html">Packages and projects</a>.</p>
+  <h2 id="doctor">Inspect the runtime</h2><pre><code>gzim doctor</code></pre><p>Prints the installed version, confirms that the runtime is native and Python-free, and shows the compiled target OS and CPU, executable path, current directory, and optional Python executable location.</p>
+  <h2 id="version">Print the version</h2><pre><code>gzim --version
+gzim --version --offline</code></pre><p>The local version stays on stdout. A newer stable GitHub release triggers platform-specific update instructions on stderr. Checks use curl with a two-second transfer timeout; unavailable curl, network errors, and rate limits do not fail the command. No installer is run automatically. Use --offline or set GZIM_NO_UPDATE_CHECK=1 to disable network access. Custom installations should set GZIM_INSTALL_ROOT when rerunning the installer; use gzim doctor afterward to verify the executable path.</p>
+  <h2 id="convert">Convert source files</h2><pre><code>gzim convert main.gzim --to py
+gzim convert main.py --to gzim
+gzim convert main.py --to gzim -o converted.gzim
+gzim convert main.gzim --to py --force
+gzim convert main.py --to gzim --check
+gzim convert main.gzim --to py --source-map
+gzim convert --help</code></pre><p>The source extension must be <code>.gzim</code> when targeting <code>py</code>, or <code>.py</code> when targeting <code>gzim</code>. By default, the result uses the source directory and basename with the target extension. <code>-o</code> (or <code>--output</code>) selects another path; its parent directory must exist.</p><p>Existing output files require <code>--force</code>. Conversion never overwrites its source, including aliases, and rejects symbolic-link outputs. The result is generated and checked before a temporary file is written beside the destination and moved into place. Conversion errors leave existing output untouched and exit with status 1. Add <code>--source-map</code> with <code>--to py</code> to write an additional <code>.py.gzmap</code> sidecar. Both destinations are checked before writing; replacement is atomic per file, not across the pair. <code>--check</code> validates conversion without touching output files and cannot be combined with <code>-o</code>, <code>--force</code>, or <code>--source-map</code>.</p><p>Python-to-Genzimnify is a limited preview requiring Python 3.8+ on <code>PATH</code>. It parses Python without executing it, normalizes formatting, and rejects unsupported constructs with source locations. Exporting Python requires no Python installation. See <a href="python-interop.html#source-conversion">source conversion support and limitations</a>.</p>
+  <h2 id="python-export">Optional Python export</h2><pre><code>gzim convert app.gzim --to py --source-map</code></pre><p>Writes <code>app.py</code> and a source map for interoperability with existing Python ecosystems. This command is optional: normal execution never invokes this backend. The duplicate <code>gzim build</code> and <code>gzim emit-python</code> commands were removed in 2.0.4 and now report the replacement command.</p>
+  <div class="callout warning"><div class="callout-title">Export runtime requirement</div><p>Running the generated file requires Python. Running <code>gzim app.gzim</code> uses the native Genzimnify runtime.</p></div>
+  <h2 id="exit-codes">Exit codes</h2><table><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody><tr><td><code>0</code></td><td>Program or command completed successfully.</td></tr><tr><td><code>1</code></td><td>Syntax, semantic, runtime, file, or CLI error.</td></tr><tr><td>Custom</td><td><code>system.exit(code)</code> exits with the requested status.</td></tr></tbody></table>
+  <h2 id="compatibility">Compatibility executable</h2><p>Release packages use <code>gzim</code>. Source builds also keep <code>genzimc</code> for existing integrations; it routes to the same native CLI.</p>
+  <div class="page-nav"><a href="stdlib.html"><small>Previous</small>← Standard library</a><a href="packages.html"><small>Next</small>Packages and projects →</a></div>
+</article></main><aside class="toc" id="pageToc"></aside></div><script src="app.js"></script></body></html>

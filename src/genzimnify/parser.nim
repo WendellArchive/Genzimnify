@@ -320,23 +320,44 @@ proc parseFor(p: var Parser): Stmt =
        line: t.line, col: t.col)
 
 proc parseParams(p: var Parser): seq[Param] =
+  var names = initTable[string, bool]()
+  var sawDefault = false
+  var sawStar = false
+  var sawStarStar = false
   while not p.check(tRParen):
     var prm = Param()
     if p.match(tStarStar):
+      if sawStarStar:
+        raise p.fail("a cook can only have one '**' param")
       prm.isStarStar = true
+      sawStarStar = true
       prm.name = p.expectName("a param name after '**'").text
     elif p.match(tStar):
+      if sawStar or sawStarStar:
+        raise p.fail("the '*' param has to come before '**'")
       prm.isStar = true
+      sawStar = true
       prm.name = p.expectName("a param name after '*'").text
     elif p.match(tFam):
+      if sawStarStar:
+        raise p.fail("no params can come after a '**' param")
       prm.name = "fam"
     else:
+      if sawStarStar:
+        raise p.fail("no params can come after a '**' param")
       prm.name = p.expectName("a param name").text
+    if names.hasKey(prm.name):
+      raise p.fail("duplicate param '" & prm.name & "', every param needs its own name")
+    names[prm.name] = true
     if p.match(tAs):
       prm.annot = p.parseType()
     if p.check(tAssign) or p.check(tBe):
       discard p.advance()
       prm.default = p.parseExpr()
+      if not prm.isStar and not prm.isStarStar:
+        sawDefault = true
+    elif sawDefault and not sawStar and not prm.isStar and not prm.isStarStar:
+      raise p.fail("a required param can't follow a default param")
     result.add prm
     if not p.match(tComma):
       break
@@ -439,6 +460,8 @@ proc parseTry(p: var Parser, anchor: int): Stmt =
     discard p.advance()
     p.expectColon("no_matter_what")
     result.finallyB = p.parseBlock()
+  if result.handlers.len == 0 and result.finallyB.len == 0:
+    raise p.fail("f_around needs at least one find_out or no_matter_what clause")
 
 proc parseWith(p: var Parser): Stmt =
   let t = p.advance()
@@ -467,6 +490,8 @@ proc parseMatch(p: var Parser): Stmt =
   var hasDefault = false
   while p.check(tFit) or p.check(tOtherwise):
     if p.match(tFit):
+      if hasDefault:
+        raise p.fail("otherwise must be the last branch in a fit check")
       let pat = p.parseExpr()
       p.expectColon("the fit pattern")
       cases.add (pat, p.parseBlock())
@@ -475,6 +500,8 @@ proc parseMatch(p: var Parser): Stmt =
       p.expectColon("otherwise")
       defBody = p.parseBlock()
       hasDefault = true
+  if cases.len == 0 and not hasDefault:
+    raise p.fail("fit check needs at least one fit or otherwise branch")
   if not p.match(tDedent):
     raise p.fail("expected the fit cases to end, dedent to close the fit check")
   Stmt(kind: skMatch, msubject: subject, mcases: cases, mdefault: defBody,
@@ -835,19 +862,31 @@ proc parseExpr*(p: var Parser, prec: int = 0): Expr =
       discard p.advance()
       var args: seq[Expr] = @[]
       var kwargs: seq[tuple[nm: string, val: Expr]] = @[]
+      var kwNames = initTable[string, bool]()
+      var sawKeyword = false
       if not p.match(tRParen):
         while true:
           if p.match(tStarStar):
+            if sawKeyword:
+              raise p.fail("starred arguments can't follow keyword arguments")
             args.add Expr(kind: ekUnary, uop: "**", uoperand: p.parseExpr(55),
                           line: t.line, col: t.col)
           elif p.match(tStar):
+            if sawKeyword:
+              raise p.fail("starred arguments can't follow keyword arguments")
             args.add Expr(kind: ekUnary, uop: "*", uoperand: p.parseExpr(55),
                           line: t.line, col: t.col)
           elif p.peek().kind == tIdent and p.peekAt(1).kind in {tBe, tAssign}:
             let nm = p.advance().text
             discard p.advance()
+            if kwNames.hasKey(nm):
+              raise p.fail("duplicate keyword argument '" & nm & "'")
+            kwNames[nm] = true
+            sawKeyword = true
             kwargs.add (nm: nm, val: p.parseExpr())
           else:
+            if sawKeyword:
+              raise p.fail("positional arguments can't follow keyword arguments")
             args.add p.parseExpr()
           if not p.match(tComma):
             break
@@ -859,6 +898,9 @@ proc parseExpr*(p: var Parser, prec: int = 0): Expr =
     else:
       discard p.advance()
       let rhsPrec = if t.kind == tStarStar: bp - 1 else: bp
+      if bp == 30 and result.kind == ekBinary and not result.grouped and
+          result.bop in ["==", "!=", "<", ">", "<=", ">=", "in", "not in", "is", "is not"]:
+        raise p.fail("comparison chains are sus; split comparisons with 'both'")
       let rhs = p.parseExpr(rhsPrec)
       result = Expr(kind: ekBinary, bop: binOpText(t.kind), blhs: result,
                     brhs: rhs, line: t.line, col: t.col)

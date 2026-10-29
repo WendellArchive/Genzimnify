@@ -1,0 +1,4 @@
+cook echo(value):
+    send it value
+
+call up echo("first", value be "second") yo
